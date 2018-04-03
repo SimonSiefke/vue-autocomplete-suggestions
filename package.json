@@ -1,0 +1,44 @@
+{
+  "name": "vue-autocomplete-suggestions",
+  "version": "0.0.1",
+  "description": "An Autocomplete Component for Vue.js",
+  "main": "dist/vue-autocomplete-suggestions.cjs.js",
+  "scripts": {
+    "start": "poi",
+    "dev": "poi",
+    "build": "bili",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "module": "dist/vue-autocomplete-suggestions.es.js",
+  "files": ["dist", "src"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimonSiefke/vue-autocomplete-suggestions"
+  },
+  "keywords": ["vue", "vuejs", "autocomplete"],
+  "author": {
+    "name": "Simon Siefke",
+    "email": "simon.siefke@gmail.com"
+  },
+  "license": "MIT",
+  "poi": {
+    "entry": "demo/main.js",
+    "dist": "demo/dist",
+    "homepage": "./",
+    "html": {
+      "template": "demo/index.html"
+    }
+  },
+  "dependencies": {
+    "poi": "^9.6.13"
+  },
+  "devDependencies": {
+    "bili": "^3.0.15",
+    "eslint": "^4.19.1",
+    "eslint-plugin-vue": "^4.4.0",
+    "rollup-plugin-vue": "^3.0.0",
+    "vue": "^2.5.16",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^3.11.0"
+  }
+}

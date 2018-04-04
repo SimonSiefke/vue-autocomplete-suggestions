@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "module": "dist/vue-autocomplete-suggestions.es.js",
-  "files": ["dist", "src"],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/SimonSiefke/vue-autocomplete-suggestions"
@@ -29,11 +29,8 @@
       "template": "demo/index.html"
     }
   },
-  "dependencies": {
-    "poi": "^9.6.13",
-    "vue-autocomplete-suggestions": "^0.0.1"
-  },
   "devDependencies": {
+    "poi": "^9.6.13",
     "bili": "^3.0.15",
     "eslint": "^4.19.1",
     "eslint-plugin-vue": "^4.4.0",

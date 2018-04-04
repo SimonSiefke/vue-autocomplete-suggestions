@@ -1,5 +1,5 @@
 /**
- * vue-autocomplete-suggestions v0.0.2
+ * vue-autocomplete-suggestions v0.0.3
  * (c) Simon Siefke <simon.siefke@gmail.com>
  * https://github.com/SimonSiefke/vue-autocomplete-suggestions
  * Released under the MIT License.
@@ -21,7 +21,7 @@
 
       return _c('section', [_c('input', _vm._g(_vm._b({
         attrs: {
-          "type": "text"
+          "type": "search"
         },
         domProps: {
           "value": _vm.value

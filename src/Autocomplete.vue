@@ -1,6 +1,6 @@
 <template>
   <section>
-    <input type="text" v-bind="$attrs" :value="value" v-on="listeners">
+    <input type="search" v-bind="$attrs" :value="value" v-on="listeners">
     <!-- make suggestions appear under the input (absolute positioned)-->
     <div style="position:relative">
       <div style="position:absolute">

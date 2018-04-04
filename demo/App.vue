@@ -15,9 +15,13 @@
 <script>
 import Vue from 'vue'
 import { animals } from './animals.json' // search data
+import VueAutocomplete from '../src'
 
 export default {
   name: 'app',
+  components: {
+    VueAutocomplete,
+  },
   data() {
     return {
       searchValue: '',

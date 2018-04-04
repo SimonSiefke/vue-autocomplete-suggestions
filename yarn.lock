@@ -7975,6 +7975,12 @@ void-elements@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
+vue-autocomplete-suggestions@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/vue-autocomplete-suggestions/-/vue-autocomplete-suggestions-0.0.1.tgz#bb654f75ab879d24b868a401dff08cba16d8032d"
+  dependencies:
+    poi "^9.6.13"
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

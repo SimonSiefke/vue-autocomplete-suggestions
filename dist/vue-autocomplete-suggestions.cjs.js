@@ -1,5 +1,5 @@
 /**
- * vue-autocomplete-suggestions v0.0.1
+ * vue-autocomplete-suggestions v0.0.2
  * (c) Simon Siefke <simon.siefke@gmail.com>
  * https://github.com/SimonSiefke/vue-autocomplete-suggestions
  * Released under the MIT License.
@@ -22,10 +22,17 @@ var Autocomplete = {
       domProps: {
         "value": _vm.value
       }
-    }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('div', [_c('div', [_vm._t("suggestions")], 2)])]);
+    }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('div', {
+      staticStyle: {
+        "position": "relative"
+      }
+    }, [_c('div', {
+      staticStyle: {
+        "position": "absolute"
+      }
+    }, [_vm._t("suggestions")], 2)])]);
   },
   staticRenderFns: [],
-  _scopeId: 'data-v-0e3ab061',
   name: 'vue-autocomplete',
   inheritAttrs: false,
   props: {
@@ -47,10 +54,4 @@ var Autocomplete = {
   }
 };
 
-var index = {
-  install: function install(Vue, options) {
-    Vue.component(Autocomplete.name, Autocomplete);
-  }
-};
-
-module.exports = index;
+module.exports = Autocomplete;

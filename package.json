@@ -1,6 +1,6 @@
 {
   "name": "vue-autocomplete-suggestions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Autocomplete Component for Vue.js",
   "main": "dist/vue-autocomplete-suggestions.cjs.js",
   "scripts": {
@@ -30,7 +30,8 @@
     }
   },
   "dependencies": {
-    "poi": "^9.6.13"
+    "poi": "^9.6.13",
+    "vue-autocomplete-suggestions": "^0.0.1"
   },
   "devDependencies": {
     "bili": "^3.0.15",

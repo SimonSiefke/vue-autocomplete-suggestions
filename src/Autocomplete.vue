@@ -1,8 +1,9 @@
 <template>
   <section>
     <input type="text" v-bind="$attrs" :value="value" v-on="listeners">
-    <div>
-      <div>
+    <!-- make suggestions appear under the input (absolute positioned)-->
+    <div style="position:relative">
+      <div style="position:absolute">
         <slot name="suggestions"></slot>
       </div>
     </div>
@@ -30,13 +31,3 @@ export default {
 }
 </script>
 
-<style scoped>
-/* make suggestions appear under the input (absolute positioned) */
-div {
-  position: relative;
-}
-
-div div {
-  position: absolute;
-}
-</style>

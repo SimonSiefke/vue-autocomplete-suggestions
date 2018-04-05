@@ -1,0 +1,106 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* make suggestions appear under the input (absolute positioned)
+   and remove spacing */
+
+ul.vue-autocomplete-suggestions {
+  position: absolute;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+ul.vue-autocomplete-suggestions li {
+  list-style: none;
+}

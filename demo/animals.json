@@ -37,7 +37,7 @@
     },
     {
       "id": 8,
-      "name": "Possu",
+      "name": "Dog",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -57,7 +57,7 @@
     },
     {
       "id": 12,
-      "name": "Koal",
+      "name": "Koala",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -72,12 +72,12 @@
     },
     {
       "id": 15,
-      "name": "Grizzly Bear",
+      "name": "Toucan",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
       "id": 16,
-      "name": "Swa",
+      "name": "Swan",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "id": 19,
-      "name": "Platypu",
+      "name": "Platypus",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -137,7 +137,7 @@
     },
     {
       "id": 28,
-      "name": "Bald Eagle",
+      "name": "Eagle",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -152,7 +152,7 @@
     },
     {
       "id": 31,
-      "name": "Ospre",
+      "name": "Turtle",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -322,7 +322,7 @@
     },
     {
       "id": 65,
-      "name": "Yellow ﬁn tuna",
+      "name": "Sea Lion",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -337,7 +337,7 @@
     },
     {
       "id": 68,
-      "name": "Cod",
+      "name": "Butterfly",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "id": 70,
-      "name": "Mackere",
+      "name": "Peacock",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -362,7 +362,7 @@
     },
     {
       "id": 73,
-      "name": "Bonit",
+      "name": "Ferret",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -377,7 +377,7 @@
     },
     {
       "id": 76,
-      "name": "Trou",
+      "name": "Shark",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "id": 79,
-      "name": "Peregrine Falco",
+      "name": "Caterpillar",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -437,7 +437,7 @@
     },
     {
       "id": 88,
-      "name": "Porcupine",
+      "name": "Squid",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "id": 91,
-      "name": "Hyen",
+      "name": "Hyena",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -477,12 +477,12 @@
     },
     {
       "id": 96,
-      "name": "Quail",
+      "name": "Lobster",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
       "id": 97,
-      "name": "Rhin",
+      "name": "Rhino",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     },
     {
@@ -497,7 +497,7 @@
     },
     {
       "id": 100,
-      "name": "Crab",
+      "name": "Fly",
       "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit."
     }
   ]

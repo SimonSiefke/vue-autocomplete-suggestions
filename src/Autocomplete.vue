@@ -52,7 +52,7 @@
 <script>
 export default {
   name: 'vue-autocomplete',
-  inheritAttrs: false, // bind attributes to the input tag (see 1.)
+  inheritAttrs: false, // bind attributes to the input tag (see 2.)
   props: {
     value: {
       type: String,
@@ -74,6 +74,7 @@ export default {
     },
   },
   computed: {
+    // for explanantion see 3.
     listeners() {
       return {
         ...this.$listeners,

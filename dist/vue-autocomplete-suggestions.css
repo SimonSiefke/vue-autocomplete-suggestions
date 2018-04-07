@@ -128,19 +128,91 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 html,
 body {
   height: 100%;
 }
+.vue-autocomplete__wrapper {
+  position: relative;
+}
 
-ul.vue-autocomplete-suggestions {
+.vue-autocomplete__wrapper > div img {
+  position: absolute;
+  height: 0.7rem;
+  width: 0.7rem;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.vue-autocomplete__wrapper input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+ul.vue-autocomplete__suggestions {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
+  width: 100%;
+  overflow: scroll;
 }
 
-ul.vue-autocomplete-suggestions li {
+ul.vue-autocomplete__suggestions > li {
   list-style: none;
   cursor: pointer;
+  width: 100%;
+  user-select: none;
 }

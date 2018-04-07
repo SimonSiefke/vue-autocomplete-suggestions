@@ -29,8 +29,9 @@ var Autocomplete = Vue.extend({
         rawName: "v-click-outside",
         value: _vm.hideSuggestions,
         expression: "hideSuggestions"
-      }]
-    }, [_c('input', _vm._g(_vm._b({
+      }],
+      staticClass: "vue-autocomplete__wrapper"
+    }, [_c('div', [_c('input', _vm._g(_vm._b({
       ref: "input",
       attrs: {
         "type": "text"
@@ -56,21 +57,38 @@ var Autocomplete = Vue.extend({
           return _vm.incrementSelectedIndex($event);
         }]
       }
-    }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('ul', {
+    }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('img', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: _vm.value !== '',
+        expression: "value!==''"
+      }],
+      ref: "resetSearch",
+      attrs: {
+        "src": "./resetSearchIcon.svg",
+        "alt": "reset search"
+      },
+      on: {
+        "click": _vm.resetSearch
+      }
+    })]), _vm._v(" "), _c('ul', {
       directives: [{
         name: "show",
         rawName: "v-show",
         value: _vm.showSuggestions,
         expression: "showSuggestions"
       }],
-      staticClass: "vue-autocomplete-suggestions"
+      ref: "suggestions",
+      staticClass: "vue-autocomplete__suggestions",
+      style: {
+        'max-height': "".concat(_vm.maxHeight, "px")
+      }
     }, [_vm.suggestions.length > 0 ? _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', {
         key: _vm.getSuggestionText(suggestion),
         on: {
           "click": function click($event) {
-            $event.stopPropagation();
-
             _vm.selectSuggestion(suggestion);
           },
           "mouseover": function mouseover($event) {
@@ -90,9 +108,39 @@ var Autocomplete = Vue.extend({
     }) : [_c('li', [_vm._t("noSuggestionFoundComponent", [_vm._v("no suggestion found")])], 2)]], 2)]);
   },
   staticRenderFns: [],
-  name: 'vue-autocomplete',
+  name: 'VueAutocomplete',
+  directives: {
+    /** detect a click outside of the input and the suggestions
+     to hide the suggestions */
+    clickOutside: {
+      isFn: true,
+      bind: function bind(element, binding, vnode) {
+        element.event = function (event) {
+          var _a = vnode.context.$refs,
+              input = _a.input,
+              resetSearch = _a.resetSearch,
+              suggestions = _a.suggestions; // check if the click was outside the components
+
+          if (input !== event.target && resetSearch !== event.target && suggestions !== event.target) {
+            // if it was, call method provided in attribute value
+            // @ts-ignore
+            vnode.context[binding.expression](event);
+          }
+        };
+
+        document.body.addEventListener('click', element.event);
+      },
+      unbind: function unbind(element) {
+        document.body.removeEventListener('click', element.event);
+      }
+    }
+  },
   inheritAttrs: false,
   props: {
+    maxHeight: {
+      type: Number,
+      "default": 300
+    },
     value: {
       type: String,
       required: true
@@ -115,25 +163,6 @@ var Autocomplete = Vue.extend({
       type: Function,
       "default": function _default(suggestion) {
         return JSON.stringify(suggestion);
-      }
-    }
-  },
-  directives: {
-    clickOutside: {
-      bind: function bind(element, binding, vnode) {
-        element.event = function (event) {
-          // check if the click was outside the element and its childrens
-          if (element !== event.target && !element.contains(event.target)) {
-            // if it was, call method provided in attribute value
-            // @ts-ignore
-            vnode.context[binding.expression](event);
-          }
-        };
-
-        document.body.addEventListener('click', element.event);
-      },
-      unbind: function unbind(element) {
-        document.body.removeEventListener('click', element.event);
       }
     }
   },
@@ -171,6 +200,11 @@ var Autocomplete = Vue.extend({
     },
     decrementSelectedIndex: function decrementSelectedIndex() {
       this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+    },
+    resetSearch: function resetSearch() {
+      this.$emit('input', '');
+      var inputElement = this.$refs.input;
+      inputElement.focus();
     }
   }
 });

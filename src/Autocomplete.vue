@@ -16,7 +16,7 @@
     -->
     <input type="text" :value="value" v-bind="$attrs" v-on="listeners" ref="input" @focus="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex">
 
-    <ul class="vue-autocomplete-suggestions" v-show="showSuggestions">
+    <ul class="vue-autocomplete-suggestions" v-show="showSuggestions" ref="suggestions">
       <template v-if="suggestions.length>0">
         <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click.stop="selectSuggestion(suggestion)" @mouseover="selectedIndex=index" @mouseleave="selectedIndex=-1">
           <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectedIndex"></component>
@@ -72,10 +72,13 @@ export default Vue.extend({
   },
   directives: {
     clickOutside: {
+      isFn: true,
       bind(element: any, binding: any, vnode: VNode) {
-        element.event = (event: any) => {
-          // check if the click was outside the element and its childrens
-          if (element !== event.target && !element.contains(event.target)) {
+        element.event = (event: Event) => {
+          const { input, suggestions } = vnode.context!.$refs
+
+          // check if the click was outside the input and outside the suggestions list
+          if (input !== event.target && suggestions !== event.target) {
             // if it was, call method provided in attribute value
             // @ts-ignore
             vnode.context[binding.expression](event)

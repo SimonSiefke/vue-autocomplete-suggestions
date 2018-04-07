@@ -1,8 +1,6 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <section id="start">
-    <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getSuggestionText="getSuggestionText" :suggestionComponent="$options.components.suggestionComponent" />
-  </section>
+  <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getSuggestionText="getSuggestionText" :suggestionComponent="$options.components.suggestionComponent" />
 </template>
 
 <script>
@@ -37,3 +35,9 @@ export default {
   },
 }
 </script>
+
+<style>
+body {
+  margin: 0;
+}
+</style>

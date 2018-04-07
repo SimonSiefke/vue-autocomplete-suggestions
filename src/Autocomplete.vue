@@ -188,8 +188,8 @@ body {
 
 .vue-autocomplete__wrapper > div img {
   position: absolute;
-  height: 0.7rem;
-  width: 0.7rem;
+  height: 0.85rem;
+  width: 0.85rem;
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);

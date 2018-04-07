@@ -40,4 +40,7 @@ export default {
 body {
   margin: 0;
 }
+.vue-autocomplete__wrapper {
+  width: 208px;
+}
 </style>

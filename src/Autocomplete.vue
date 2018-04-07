@@ -1,5 +1,5 @@
 <template>
-  <section v-click-outside="hideSuggestions">
+  <section v-click-outside="hideSuggestions" class="vue-autocomplete__wrapper">
     <!-- some explanations for the input:
     1. ':value="value"': Use the received as props
         for the input element
@@ -14,9 +14,14 @@
         (which would be the default). This allows us to do
         things like: <vue-autocomplete @input="someFunction">
     -->
-    <input type="text" :value="value" v-bind="$attrs" v-on="listeners" ref="input" @focus="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex">
+    <div>
+      <input type="text" :value="value" v-bind="$attrs" v-on="listeners" @focus="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex" ref="input">
 
-    <ul class="vue-autocomplete-suggestions" v-show="showSuggestions" ref="suggestions">
+      <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
+      <img src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch" ref="resetSearch" v-show="value!==''">
+    </div>
+
+    <ul class="vue-autocomplete__suggestions" v-show="showSuggestions" ref="suggestions" :style="{'max-height': `${maxHeight}px`}">
       <template v-if="suggestions.length>0">
         <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click.stop="selectSuggestion(suggestion)" @mouseover="selectedIndex=index" @mouseleave="selectedIndex=-1">
           <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectedIndex"></component>
@@ -46,6 +51,10 @@ export default Vue.extend({
   name: 'vue-autocomplete',
   inheritAttrs: false, // bind attributes to the input tag (see 2.)
   props: {
+    maxHeight: {
+      type: Number,
+      default: 300,
+    },
     value: {
       type: String,
       required: true,
@@ -71,14 +80,20 @@ export default Vue.extend({
     },
   },
   directives: {
+    /** detect a click outside of the input and the suggestions
+     to hide the suggestions */
     clickOutside: {
       isFn: true,
       bind(element: any, binding: any, vnode: VNode) {
         element.event = (event: Event) => {
-          const { input, suggestions } = vnode.context!.$refs
+          const { input, resetSearch, suggestions } = vnode.context!.$refs
 
-          // check if the click was outside the input and outside the suggestions list
-          if (input !== event.target && suggestions !== event.target) {
+          // check if the click was outside the components
+          if (
+            input !== event.target &&
+            resetSearch !== event.target &&
+            suggestions !== event.target
+          ) {
             // if it was, call method provided in attribute value
             // @ts-ignore
             vnode.context[binding.expression](event)
@@ -126,6 +141,11 @@ export default Vue.extend({
     decrementSelectedIndex() {
       this.selectedIndex = Math.max(this.selectedIndex - 1, -1)
     },
+    resetSearch() {
+      this.$emit('input', '')
+      const inputElement = this.$refs.input as HTMLInputElement
+      inputElement.focus()
+    },
   },
 })
 </script>
@@ -135,16 +155,39 @@ html,
 body {
   height: 100%;
 }
+.vue-autocomplete__wrapper {
+  position: relative;
+}
 
-ul.vue-autocomplete-suggestions {
+.vue-autocomplete__wrapper > div img {
+  position: absolute;
+  height: 0.7rem;
+  width: 0.7rem;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.vue-autocomplete__wrapper input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+ul.vue-autocomplete__suggestions {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
+  width: 100%;
+  overflow: scroll;
 }
 
-ul.vue-autocomplete-suggestions li {
+ul.vue-autocomplete__suggestions > li {
   list-style: none;
   cursor: pointer;
+  width: 100%;
+  user-select: none;
 }
 </style>

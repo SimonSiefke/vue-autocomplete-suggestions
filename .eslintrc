@@ -1,5 +1,5 @@
 {
-  "extends": ["plugin:vue/base"],
+  "extends": ["plugin:vue/base", "eslint:recommended", "@vue/typescript"],
   "rules": {
     "semi": ["error", "never"],
     "comma-dangle": [

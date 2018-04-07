@@ -1,28 +1,35 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
   <section id="start">
-    <!-- <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getLabel="getLabel">
-      <span slot="suggestionComponent" slot-scope="animal" :style="{'color':animal.active ? 'red':'green'}">{{animal}}</span>
-    </vue-autocomplete> -->
-    <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getSuggestionText="getSuggestionText" :suggestionComponent="$options.components.suggestionComponent">
-
-    </vue-autocomplete>
+    <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getSuggestionText="getSuggestionText" :suggestionComponent="$options.components.suggestionComponent" />
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import { animals } from './animals.json' // sample search data
-import VueAutocomplete from '../src'
-import suggestionComponent from './SuggestionComponent'
+import VueAutocomplete from '../src/index'
+import suggestionComponent from './SuggestionComponent.vue'
 
-export default {
+interface Animal {
+  name: string
+  id: number
+  description: string
+}
+
+interface Data {
+  searchValue: string
+  animals: Animal[]
+  suggestionComponent: any
+}
+
+export default Vue.extend({
   name: 'app',
   components: {
     VueAutocomplete,
     suggestionComponent,
   },
-  data() {
+  data(): Data {
     return {
       searchValue: '',
       animals,
@@ -30,7 +37,7 @@ export default {
     }
   },
   computed: {
-    suggestions() {
+    suggestions(): Animal[] {
       return this.animals.filter(animal => {
         const searchValueRegex = new RegExp(this.searchValue, 'i')
         return searchValueRegex.test(animal.name)
@@ -38,9 +45,9 @@ export default {
     },
   },
   methods: {
-    getSuggestionText(animal) {
+    getSuggestionText(animal: Animal) {
       return animal.name
     },
   },
-}
+})
 </script>

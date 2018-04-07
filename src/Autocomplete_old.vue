@@ -1,5 +1,5 @@
 <template>
-  <section v-click-outside="hideSuggestions">
+  <section>
     <!-- some explanations for the input:
     1. ':value="value"': Use the received as props
         for the input element
@@ -32,17 +32,8 @@
   </section>
 </template>
 
-<script lang="ts">
-import Vue, { VNode } from 'vue'
-
-interface Data {
-  selectedIndex: number
-  showSuggestions: boolean
-}
-
-type Suggestion = any
-
-export default Vue.extend({
+<script>
+export default {
   name: 'vue-autocomplete',
   inheritAttrs: false, // bind attributes to the input tag (see 2.)
   props: {
@@ -65,27 +56,7 @@ export default Vue.extend({
     */
     getSuggestionText: {
       type: Function,
-      default(suggestion: Suggestion) {
-        return JSON.stringify(suggestion)
-      },
-    },
-  },
-  directives: {
-    clickOutside: {
-      bind(element: any, binding: any, vnode: VNode) {
-        element.event = (event: any) => {
-          // check if the click was outside the element and its childrens
-          if (element !== event.target && !element.contains(event.target)) {
-            // if it was, call method provided in attribute value
-            // @ts-ignore
-            vnode.context[binding.expression](event)
-          }
-        }
-        document.body.addEventListener('click', element.event)
-      },
-      unbind(element: any) {
-        document.body.removeEventListener('click', element.event)
-      },
+      default: suggestion => JSON.stringify(suggestion),
     },
   },
   data() {
@@ -95,28 +66,28 @@ export default Vue.extend({
     }
   },
   computed: {
-    listeners(): any {
+    // for explanantion see 3.
+    listeners() {
       return {
         ...this.$listeners,
-        input: (event: any) => this.$emit('input', event.target.value),
+        input: event => this.$emit('input', event.target.value),
       }
     },
   },
   methods: {
     hideSuggestions() {
+      console.log('hide suggestions')
       this.showSuggestions = false
       this.selectedIndex = -1
     },
-    selectSuggestion(suggestion: Suggestion) {
+    selectSuggestion(suggestion) {
       this.hideSuggestions()
-      // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
       const value = this.getSuggestionText(suggestion)
       this.$emit('input', value)
     },
     incrementSelectedIndex() {
       this.selectedIndex = Math.min(
         this.selectedIndex + 1,
-        // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
         this.suggestions.length
       )
     },
@@ -124,16 +95,18 @@ export default Vue.extend({
       this.selectedIndex = Math.max(this.selectedIndex - 1, -1)
     },
   },
-})
+}
 </script>
 
 <style>
+/* make suggestions appear under the input (absolute positioned)
+   and remove spacing */
 html,
 body {
   height: 100%;
 }
 
-ul.vue-autocomplete-suggestions {
+/* ul.vue-autocomplete-suggestions {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
@@ -143,5 +116,5 @@ ul.vue-autocomplete-suggestions {
 ul.vue-autocomplete-suggestions li {
   list-style: none;
   cursor: pointer;
-}
+} */
 </style>

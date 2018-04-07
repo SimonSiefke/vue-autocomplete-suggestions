@@ -1,10 +1,23 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.vueAutocompleteSuggestions = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
+  typeof define === 'function' && define.amd ? define(['vue'], factory) :
+  (global.vueAutocompleteSuggestions = factory(global.Vue));
+}(this, (function (Vue) { 'use strict';
 
-  var Autocomplete = {
+  Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
+
+  var __assign = undefined && undefined.__assign || Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+  var Autocomplete = Vue.extend({
     render: function render() {
       var _vm = this;
 
@@ -12,7 +25,14 @@
 
       var _c = _vm._self._c || _h;
 
-      return _c('section', [_c('input', _vm._g(_vm._b({
+      return _c('section', {
+        directives: [{
+          name: "click-outside",
+          rawName: "v-click-outside",
+          value: _vm.hideSuggestions,
+          expression: "hideSuggestions"
+        }]
+      }, [_c('input', _vm._g(_vm._b({
         ref: "input",
         attrs: {
           "type": "text"
@@ -74,24 +94,6 @@
     staticRenderFns: [],
     name: 'vue-autocomplete',
     inheritAttrs: false,
-    // bind attributes to the input tag (see 2.)
-    // directives: {
-    //   clickOutside: {
-    //     bind: function(el, binding, vnode) {
-    //       el.event = function(event) {
-    //         // here I check that click was outside the el and his childrens
-    //         if (!(el == event.target || el.contains(event.target))) {
-    //           // and if it did, call method provided in attribute value
-    //           vnode.context[binding.expression](event)
-    //         }
-    //       }
-    //       document.body.addEventListener('click', el.event)
-    //     },
-    //     unbind: function(el) {
-    //       document.body.removeEventListener('click', el.event)
-    //     },
-    //   },
-    // },
     props: {
       value: {
         type: String,
@@ -113,8 +115,27 @@
       */
       getSuggestionText: {
         type: Function,
-        default: function _default(suggestion) {
+        "default": function _default(suggestion) {
           return JSON.stringify(suggestion);
+        }
+      }
+    },
+    directives: {
+      clickOutside: {
+        bind: function bind(element, binding, vnode) {
+          element.event = function (event) {
+            // check if the click was outside the element and its childrens
+            if (element !== event.target && !element.contains(event.target)) {
+              // if it was, call method provided in attribute value
+              // @ts-ignore
+              vnode.context[binding.expression](event);
+            }
+          };
+
+          document.body.addEventListener('click', element.event);
+        },
+        unbind: function unbind(element) {
+          document.body.removeEventListener('click', element.event);
         }
       }
     },
@@ -125,11 +146,10 @@
       };
     },
     computed: {
-      // for explanantion see 3.
       listeners: function listeners() {
         var _this = this;
 
-        return Object.assign({}, this.$listeners, {
+        return __assign({}, this.$listeners, {
           input: function input(event) {
             return _this.$emit('input', event.target.value);
           }
@@ -142,18 +162,20 @@
         this.selectedIndex = -1;
       },
       selectSuggestion: function selectSuggestion(suggestion) {
-        this.hideSuggestions();
+        this.hideSuggestions(); // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
+
         var value = this.getSuggestionText(suggestion);
         this.$emit('input', value);
       },
       incrementSelectedIndex: function incrementSelectedIndex() {
-        this.selectedIndex = Math.min(this.selectedIndex + 1, this.suggestions.length);
+        this.selectedIndex = Math.min(this.selectedIndex + 1, // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
+        this.suggestions.length);
       },
       decrementSelectedIndex: function decrementSelectedIndex() {
         this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
       }
     }
-  };
+  });
 
   return Autocomplete;
 

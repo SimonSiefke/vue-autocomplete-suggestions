@@ -115,8 +115,23 @@
 
 
 
-/* make suggestions appear under the input (absolute positioned)
-   and remove spacing */
+
+
+
+
+
+
+
+
+
+
+
+
+
+html,
+body {
+  height: 100%;
+}
 
 ul.vue-autocomplete-suggestions {
   position: absolute;

@@ -118,6 +118,7 @@ export default Vue.extend({
     },
     suggestionComponent: {
       required: true,
+      type: Object,
     },
     /**
       this function returns the value that will be the value

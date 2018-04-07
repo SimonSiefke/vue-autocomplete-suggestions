@@ -1,10 +1,3 @@
-/**
- * vue-autocomplete-suggestions v0.0.5
- * (c) Simon Siefke <simon.siefke@gmail.com>
- * https://github.com/SimonSiefke/vue-autocomplete-suggestions
- * Released under the MIT License.
- */
-
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -20,29 +13,85 @@
       var _c = _vm._self._c || _h;
 
       return _c('section', [_c('input', _vm._g(_vm._b({
+        ref: "input",
         attrs: {
           "type": "text"
         },
         domProps: {
           "value": _vm.value
+        },
+        on: {
+          "focus": function focus($event) {
+            _vm.showSuggestions = true;
+          },
+          "keydown": [function ($event) {
+            if (!('button' in $event) && _vm._k($event.keyCode, "up", 38, $event.key, ["Up", "ArrowUp"])) {
+              return null;
+            }
+
+            return _vm.decrementSelectedIndex($event);
+          }, function ($event) {
+            if (!('button' in $event) && _vm._k($event.keyCode, "down", 40, $event.key, ["Down", "ArrowDown"])) {
+              return null;
+            }
+
+            return _vm.incrementSelectedIndex($event);
+          }]
         }
       }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('ul', {
+        directives: [{
+          name: "show",
+          rawName: "v-show",
+          value: _vm.showSuggestions,
+          expression: "showSuggestions"
+        }],
         staticClass: "vue-autocomplete-suggestions"
-      }, [_vm._l(_vm.suggestions, function (suggestion) {
-        return [_c('li', {
-          key: _vm.getLabel(suggestion),
+      }, [_vm.suggestions.length > 0 ? _vm._l(_vm.suggestions, function (suggestion, index) {
+        return _c('li', {
+          key: _vm.getSuggestionText(suggestion),
           on: {
             "click": function click($event) {
+              $event.stopPropagation();
+
               _vm.selectSuggestion(suggestion);
+            },
+            "mouseover": function mouseover($event) {
+              _vm.selectedIndex = index;
+            },
+            "mouseleave": function mouseleave($event) {
+              _vm.selectedIndex = -1;
             }
           }
-        }, [_vm._t("suggestionComponent", [_vm._v(" " + _vm._s(suggestion) + " ")], null, suggestion)], 2)];
-      })], 2)]);
+        }, [_c(_vm.suggestionComponent, {
+          tag: "component",
+          attrs: {
+            "suggestion": suggestion,
+            "active": index === _vm.selectedIndex
+          }
+        })], 1);
+      }) : [_c('li', [_vm._t("noSuggestionFoundComponent", [_vm._v("no suggestion found")])], 2)]], 2)]);
     },
     staticRenderFns: [],
     name: 'vue-autocomplete',
     inheritAttrs: false,
-    // bind attributes to the input tag (see 1.)
+    // bind attributes to the input tag (see 2.)
+    // directives: {
+    //   clickOutside: {
+    //     bind: function(el, binding, vnode) {
+    //       el.event = function(event) {
+    //         // here I check that click was outside the el and his childrens
+    //         if (!(el == event.target || el.contains(event.target))) {
+    //           // and if it did, call method provided in attribute value
+    //           vnode.context[binding.expression](event)
+    //         }
+    //       }
+    //       document.body.addEventListener('click', el.event)
+    //     },
+    //     unbind: function(el) {
+    //       document.body.removeEventListener('click', el.event)
+    //     },
+    //   },
+    // },
     props: {
       value: {
         type: String,
@@ -52,21 +101,31 @@
         type: Array,
         required: true
       },
+      suggestionComponent: {
+        required: true
+      },
 
       /**
         this function returns the value that will be the value
         of the input element when the suggestionComponent is clicked.
         because it is unique, its return value is also used as a key
-        for the suggestion (see <li :key="getLabel(suggestion)">)
+        for the suggestion (see <li :key="getSuggestionText(suggestion)">)
       */
-      getLabel: {
+      getSuggestionText: {
         type: Function,
         default: function _default(suggestion) {
           return JSON.stringify(suggestion);
         }
       }
     },
+    data: function data() {
+      return {
+        selectedIndex: -1,
+        showSuggestions: true
+      };
+    },
     computed: {
+      // for explanantion see 3.
       listeners: function listeners() {
         var _this = this;
 
@@ -78,9 +137,20 @@
       }
     },
     methods: {
+      hideSuggestions: function hideSuggestions() {
+        this.showSuggestions = false;
+        this.selectedIndex = -1;
+      },
       selectSuggestion: function selectSuggestion(suggestion) {
-        var value = this.getLabel(suggestion);
+        this.hideSuggestions();
+        var value = this.getSuggestionText(suggestion);
         this.$emit('input', value);
+      },
+      incrementSelectedIndex: function incrementSelectedIndex() {
+        this.selectedIndex = Math.min(this.selectedIndex + 1, this.suggestions.length);
+      },
+      decrementSelectedIndex: function decrementSelectedIndex() {
+        this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
       }
     }
   };

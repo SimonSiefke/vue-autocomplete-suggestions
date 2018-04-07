@@ -91,6 +91,30 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* make suggestions appear under the input (absolute positioned)
    and remove spacing */
 
@@ -103,4 +127,5 @@ ul.vue-autocomplete-suggestions {
 
 ul.vue-autocomplete-suggestions li {
   list-style: none;
+  cursor: pointer;
 }

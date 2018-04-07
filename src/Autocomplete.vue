@@ -14,35 +14,18 @@
         (which would be the default). This allows us to do
         things like: <vue-autocomplete @input="someFunction">
     -->
-    <input type="text" :value="value" v-bind="$attrs" v-on="listeners">
+    <input type="text" :value="value" v-bind="$attrs" v-on="listeners" ref="input" @focus="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex">
 
-    <ul class="vue-autocomplete-suggestions">
-      <template v-for="suggestion in suggestions">
-        <li :key="getLabel(suggestion)" @click="selectSuggestion(suggestion)">
-          <!-- some explanations for the slot:
-          4. 'slot name="suggestionComponent"': the suggestion component
-            provided by the user will be rendered, e.g.
-            <vue-autocomplete>
-              <my-component slot="suggestionComponent">
-                I am text inside the suggestion component
-              </my-component>
-            </vue-autocomplete>
+    <ul class="vue-autocomplete-suggestions" v-show="showSuggestions">
+      <template v-if="suggestions.length>0">
+        <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click.stop="selectSuggestion(suggestion)" @mouseover="selectedIndex=index" @mouseleave="selectedIndex=-1">
+          <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectedIndex"></component>
+        </li>
+      </template>
 
-          5. 'v-bind="suggestion"': pass the suggestion as a prop
-              to the component provided by the user so that the user
-              can access it with slot-scope, e.g.
-              <vue-autocomplete :suggestions="['a','b','c']">
-                <my-component slot="suggestionComponent" slot-scope="myProp">
-                  {{myProp}} (myProp will be the suggestion: 'a','b' or 'c')
-                </my-component>
-              </vue-autocomplete>
-          -->
-          <slot name="suggestionComponent" v-bind="suggestion">
-            <!-- use the suggestion as a fallback when
-                 there is no component provided by the user
-            -->
-            {{suggestion}}
-          </slot>
+      <template v-else>
+        <li>
+          <slot name="noSuggestionFoundComponent">no suggestion found</slot>
         </li>
       </template>
     </ul>
@@ -53,6 +36,23 @@
 export default {
   name: 'vue-autocomplete',
   inheritAttrs: false, // bind attributes to the input tag (see 2.)
+  // directives: {
+  //   clickOutside: {
+  //     bind: function(el, binding, vnode) {
+  //       el.event = function(event) {
+  //         // here I check that click was outside the el and his childrens
+  //         if (!(el == event.target || el.contains(event.target))) {
+  //           // and if it did, call method provided in attribute value
+  //           vnode.context[binding.expression](event)
+  //         }
+  //       }
+  //       document.body.addEventListener('click', el.event)
+  //     },
+  //     unbind: function(el) {
+  //       document.body.removeEventListener('click', el.event)
+  //     },
+  //   },
+  // },
   props: {
     value: {
       type: String,
@@ -62,16 +62,25 @@ export default {
       type: Array,
       required: true,
     },
+    suggestionComponent: {
+      required: true,
+    },
     /**
       this function returns the value that will be the value
       of the input element when the suggestionComponent is clicked.
       because it is unique, its return value is also used as a key
-      for the suggestion (see <li :key="getLabel(suggestion)">)
+      for the suggestion (see <li :key="getSuggestionText(suggestion)">)
     */
-    getLabel: {
+    getSuggestionText: {
       type: Function,
       default: suggestion => JSON.stringify(suggestion),
     },
+  },
+  data() {
+    return {
+      selectedIndex: -1,
+      showSuggestions: true,
+    }
   },
   computed: {
     // for explanantion see 3.
@@ -83,9 +92,23 @@ export default {
     },
   },
   methods: {
+    hideSuggestions() {
+      this.showSuggestions = false
+      this.selectedIndex = -1
+    },
     selectSuggestion(suggestion) {
-      const value = this.getLabel(suggestion)
+      this.hideSuggestions()
+      const value = this.getSuggestionText(suggestion)
       this.$emit('input', value)
+    },
+    incrementSelectedIndex() {
+      this.selectedIndex = Math.min(
+        this.selectedIndex + 1,
+        this.suggestions.length
+      )
+    },
+    decrementSelectedIndex() {
+      this.selectedIndex = Math.max(this.selectedIndex - 1, -1)
     },
   },
 }
@@ -104,5 +127,6 @@ ul.vue-autocomplete-suggestions {
 
 ul.vue-autocomplete-suggestions li {
   list-style: none;
+  cursor: pointer;
 }
 </style>

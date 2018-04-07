@@ -1,33 +1,59 @@
 <template>
-  <section v-click-outside="hideSuggestions" class="vue-autocomplete__wrapper">
-    <!-- some explanations for the input:
-    1. ':value="value"': Use the received as props
-        for the input element
-
-    2. 'v-bind="$attrs"': Bind attributes like placeholder
-        to the input element instead of the section element
-        (which would be the default)
-
-    3. 'v-on="listeners"': We modify the input listener and
-        emit the input event when someone types something
-        into the input instead of the section element
-        (which would be the default). This allows us to do
-        things like: <vue-autocomplete @input="someFunction">
-    -->
+  <section
+    v-click-outside="hideSuggestions"
+    class="vue-autocomplete__wrapper">
     <div>
-      <input type="text" :value="value" v-bind="$attrs" v-on="listeners" @focus="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex" ref="input">
+      <!-- some explanations for the input:
+      1. 'v-bind="$attrs"': Bind attributes like placeholder
+          to the input element instead of the section element
+          (which would be the default)
+
+      2. ':value="value"': Use the value received as props
+          for the input element
+
+      3. 'v-on="listeners"': We modify the input listener and
+          emit the input event when someone types something
+          into the input instead of the section element
+          (which would be the default). This allows us to do
+          things like: <vue-autocomplete @input="someFunction">
+      -->
+      <input
+        ref="input"
+        v-bind="$attrs"
+        :value="value"
+        type="text"
+        v-on="listeners"
+        @focus="showSuggestions=true"
+        @keydown.up="decrementSelectedIndex"
+        @keydown.down="incrementSelectedIndex">
 
       <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
-      <img src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch" ref="resetSearch" v-show="value!==''">
+      <img
+        v-show="value!==''"
+        ref="resetSearch"
+        src="./resetSearchIcon.svg"
+        alt="reset search"
+        @click="resetSearch">
     </div>
 
-    <ul class="vue-autocomplete__suggestions" v-show="showSuggestions" ref="suggestions" :style="{'max-height': `${maxHeight}px`}">
+    <ul
+      v-show="showSuggestions"
+      ref="suggestions"
+      :style="{'max-height': `${maxHeight}px`}"
+      class="vue-autocomplete__suggestions">
       <template v-if="suggestions.length>0">
-        <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click.stop="selectSuggestion(suggestion)" @mouseover="selectedIndex=index" @mouseleave="selectedIndex=-1">
-          <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectedIndex"></component>
+        <li
+          v-for="(suggestion, index) in suggestions"
+          :key="getSuggestionText(suggestion)"
+          @click="selectSuggestion(suggestion)"
+          @mouseover="selectedIndex=index"
+          @mouseleave="selectedIndex=-1">
+          <component
+            :is="suggestionComponent"
+            :suggestion="suggestion"
+            :active="index===selectedIndex" />
         </li>
       </template>
-
       <template v-else>
         <li>
           <slot name="noSuggestionFoundComponent">no suggestion found</slot>
@@ -48,7 +74,34 @@ interface Data {
 type Suggestion = any
 
 export default Vue.extend({
-  name: 'vue-autocomplete',
+  name: 'VueAutocomplete',
+  directives: {
+    /** detect a click outside of the input and the suggestions
+     to hide the suggestions */
+    clickOutside: {
+      isFn: true,
+      bind(element: any, binding: any, vnode: VNode) {
+        element.event = (event: Event) => {
+          const { input, resetSearch, suggestions } = vnode.context!.$refs
+
+          // check if the click was outside the components
+          if (
+            input !== event.target &&
+            resetSearch !== event.target &&
+            suggestions !== event.target
+          ) {
+            // if it was, call method provided in attribute value
+            // @ts-ignore
+            vnode.context[binding.expression](event)
+          }
+        }
+        document.body.addEventListener('click', element.event)
+      },
+      unbind(element: any) {
+        document.body.removeEventListener('click', element.event)
+      },
+    },
+  },
   inheritAttrs: false, // bind attributes to the input tag (see 2.)
   props: {
     maxHeight: {
@@ -76,33 +129,6 @@ export default Vue.extend({
       type: Function,
       default(suggestion: Suggestion) {
         return JSON.stringify(suggestion)
-      },
-    },
-  },
-  directives: {
-    /** detect a click outside of the input and the suggestions
-     to hide the suggestions */
-    clickOutside: {
-      isFn: true,
-      bind(element: any, binding: any, vnode: VNode) {
-        element.event = (event: Event) => {
-          const { input, resetSearch, suggestions } = vnode.context!.$refs
-
-          // check if the click was outside the components
-          if (
-            input !== event.target &&
-            resetSearch !== event.target &&
-            suggestions !== event.target
-          ) {
-            // if it was, call method provided in attribute value
-            // @ts-ignore
-            vnode.context[binding.expression](event)
-          }
-        }
-        document.body.addEventListener('click', element.event)
-      },
-      unbind(element: any) {
-        document.body.removeEventListener('click', element.event)
       },
     },
   },

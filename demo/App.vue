@@ -1,6 +1,10 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestions="suggestions" :getSuggestionText="getSuggestionText" :suggestionComponent="$options.components.suggestionComponent" />
+  <vue-autocomplete
+    v-model="searchValue"
+    :suggestions="suggestions"
+    :get-suggestion-text="getSuggestionText"
+    :suggestion-component="$options.components.suggestionComponent" />
 </template>
 
 <script>
@@ -9,7 +13,7 @@ import VueAutocomplete from '../src'
 import suggestionComponent from './SuggestionComponent.vue'
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     VueAutocomplete,
     suggestionComponent,

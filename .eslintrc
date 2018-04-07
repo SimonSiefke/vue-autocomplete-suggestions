@@ -1,5 +1,9 @@
 {
-  "extends": ["plugin:vue/base", "eslint:recommended", "@vue/typescript"],
+  "extends": [
+    "plugin:vue/recommended",
+    "eslint:recommended",
+    "@vue/typescript"
+  ],
   "rules": {
     "semi": ["error", "never"],
     "comma-dangle": [
@@ -10,6 +14,16 @@
         "imports": "always-multiline",
         "exports": "always-multiline",
         "functions": "never"
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      2,
+      {
+        "singleline": 1,
+        "multiline": {
+          "max": 1,
+          "allowFirstLine": false
+        }
       }
     ]
   }

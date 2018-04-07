@@ -5,39 +5,25 @@
   </section>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
+<script>
 import { animals } from './animals.json' // sample search data
-import VueAutocomplete from '../src/index'
+import VueAutocomplete from '../src'
 import suggestionComponent from './SuggestionComponent.vue'
 
-interface Animal {
-  name: string
-  id: number
-  description: string
-}
-
-interface Data {
-  searchValue: string
-  animals: Animal[]
-  suggestionComponent: any
-}
-
-export default Vue.extend({
+export default {
   name: 'app',
   components: {
     VueAutocomplete,
     suggestionComponent,
   },
-  data(): Data {
+  data() {
     return {
       searchValue: '',
       animals,
-      suggestionComponent,
     }
   },
   computed: {
-    suggestions(): Animal[] {
+    suggestions() {
       return this.animals.filter(animal => {
         const searchValueRegex = new RegExp(this.searchValue, 'i')
         return searchValueRegex.test(animal.name)
@@ -45,9 +31,9 @@ export default Vue.extend({
     },
   },
   methods: {
-    getSuggestionText(animal: Animal) {
+    getSuggestionText(animal) {
       return animal.name
     },
   },
-})
+}
 </script>

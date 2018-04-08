@@ -24,8 +24,10 @@
         type="text"
         v-on="listeners"
         @focus="showSuggestions=true"
+        @input="showSuggestions=true"
         @keydown.up="decrementSelectedIndex"
-        @keydown.down="incrementSelectedIndex">
+        @keydown.down="incrementSelectedIndex"
+        @keydown.enter="selectSuggestion(suggestions[selectedIndex])">
 
       <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
       <img
@@ -45,6 +47,8 @@
         <li
           v-for="(suggestion, index) in suggestions"
           :key="getSuggestionText(suggestion)"
+          :class="{active: selectedIndex===index}"
+          class="vue-autocomplete__suggestion"
           @click="selectSuggestion(suggestion)"
           @mouseover="selectedIndex=index"
           @mouseleave="selectedIndex=-1">
@@ -158,7 +162,11 @@ export default Vue.extend({
       const value = this.getSuggestionText(suggestion)
       this.$emit('input', value)
     },
+    // selectSuggestionAtIndex(index:number){
+    //   if()
+    // },
     incrementSelectedIndex() {
+      this.showSuggestions = true
       this.selectedIndex = Math.min(
         this.selectedIndex + 1,
         // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
@@ -216,5 +224,11 @@ ul.vue-autocomplete__suggestions > li {
   cursor: pointer;
   width: 100%;
   user-select: none;
+}
+
+.vue-autocomplete__suggestion.active {
+  background: #007fff;
+  color: #ffffff;
+  transition: all 0.04s;
 }
 </style>

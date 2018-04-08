@@ -5,13 +5,12 @@
 <style>
 span {
   display: block;
-  /* padding: 0.2rem; */
+  padding: 0.2rem;
+  transition: all 0.04s;
 }
 
 .active {
   background: #007fff;
   color: #ffffff;
-  border: 1px solid #003eff;
-  margin: -1px;
 }
 </style>

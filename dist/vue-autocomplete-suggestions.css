@@ -177,6 +177,7 @@
 
 
 
+
 html,
 body {
   height: 100%;
@@ -187,8 +188,8 @@ body {
 
 .vue-autocomplete__wrapper > div img {
   position: absolute;
-  height: 0.7rem;
-  width: 0.7rem;
+  height: 0.85rem;
+  width: 0.85rem;
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
@@ -207,7 +208,7 @@ ul.vue-autocomplete__suggestions {
   margin-top: 0;
   margin-bottom: 0;
   width: 100%;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 ul.vue-autocomplete__suggestions > li {

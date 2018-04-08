@@ -146,7 +146,8 @@ var Autocomplete = Vue.extend({
       required: true
     },
     suggestionComponent: {
-      required: true
+      required: true,
+      type: Object
     },
 
     /**

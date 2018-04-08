@@ -47,4 +47,8 @@ body {
 .vue-autocomplete__wrapper {
   width: 208px;
 }
+
+.vue-autocomplete__suggestions {
+  border: 1px solid #c5c5c5;
+}
 </style>

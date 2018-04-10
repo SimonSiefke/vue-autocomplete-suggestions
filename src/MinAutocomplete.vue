@@ -3,7 +3,7 @@
     <div>
       <input ref="input" v-bind="inputAttributes" v-on="inputListeners" type="text">
       <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
-      <img ref="resetSearch" src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch">
+      <!-- <img ref="resetSearch" src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch"> -->
     </div>
 
     <ul v-show="showSuggestions" ref="suggestions">
@@ -255,12 +255,11 @@ html,
 body {
   height: 100%;
 }
-section {
+.vue-autocomplete {
   position: relative;
-  width: 300px;
 }
 
-img {
+.vue-autocomplete img {
   position: absolute;
   height: 0.85rem;
   width: 0.85rem;
@@ -271,11 +270,11 @@ img {
   padding: 0.2rem;
 }
 
-input {
+.vue-autocomplete input {
   width: 100%;
   box-sizing: border-box;
 }
-ul {
+.vue-autocomplete ul {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
@@ -285,9 +284,10 @@ ul {
   max-height: 300px;
 }
 
-li {
+.vue-autocomplete li {
   list-style: none;
   cursor: pointer;
   user-select: none;
+  background: #ffffff;
 }
 </style>

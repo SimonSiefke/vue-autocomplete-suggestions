@@ -11,3 +11,5 @@
 * [ ] dynamic keys for event handling (tab, enter for select)
 * [ ] fix svg not showing up on npm
 * [ ] listen for custom events like select, request start, request failed
+* [ ] fix bug: no results is shown if though there are results
+* [ ] handle loading

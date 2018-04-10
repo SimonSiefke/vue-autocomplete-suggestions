@@ -177,9 +177,6 @@ var __generator = undefined && undefined.__generator || function (thisArg, body)
     };
   }
 };
-// save the result for each input inside this cache
-
-var suggestionCache = {};
 var MinAutocomplete = Vue.extend({
   render: function render() {
     var _vm = this;
@@ -201,16 +198,7 @@ var MinAutocomplete = Vue.extend({
       attrs: {
         "type": "text"
       }
-    }, 'input', _vm.inputAttributes, false), _vm.inputListeners)), _vm._v(" "), _c('img', {
-      ref: "resetSearch",
-      attrs: {
-        "src": "./resetSearchIcon.svg",
-        "alt": "reset search"
-      },
-      on: {
-        "click": _vm.resetSearch
-      }
-    })]), _vm._v(" "), _c('ul', {
+    }, 'input', _vm.inputAttributes, false), _vm.inputListeners))]), _vm._v(" "), _c('ul', {
       directives: [{
         name: "show",
         rawName: "v-show",
@@ -265,9 +253,9 @@ var MinAutocomplete = Vue.extend({
 
           if (input !== event.target && resetSearch !== event.target && // @ts-ignore
           !suggestions.contains(event.target)) {
-            console.log('outside'); // if it was, call method provided in attribute value
+            // console.log('outside')
+            // if it was, call method provided in attribute value
             // @ts-ignore
-
             vnode.context[binding.expression](event);
           }
         };
@@ -308,7 +296,10 @@ var MinAutocomplete = Vue.extend({
     return {
       showSuggestions: false,
       selectionIndex: -1,
-      suggestions: []
+      suggestions: [],
+      // if suggestions source is an async function,
+      // save the result for each input inside this cache
+      suggestionCache: {}
     };
   },
   computed: {
@@ -376,7 +367,7 @@ var MinAutocomplete = Vue.extend({
               if (!this.cacheResults) return [3
               /*break*/
               , 3];
-              if (!!suggestionCache[currentValue]) return [3
+              if (!!this.suggestionCache[currentValue]) return [3
               /*break*/
               , 2];
               return [4
@@ -387,14 +378,14 @@ var MinAutocomplete = Vue.extend({
             case 1:
               newSuggestions = _a.sent(); // @ts-ignore
 
-              suggestionCache[currentValue] = newSuggestions;
+              this.suggestionCache[currentValue] = newSuggestions;
               _a.label = 2;
 
             case 2:
               // @ts-ignore
               return [2
               /*return*/
-              , suggestionCache[currentValue]];
+              , this.suggestionCache[currentValue]];
 
             case 3:
               // @ts-ignore
@@ -478,13 +469,14 @@ var MinAutocomplete = Vue.extend({
         return __generator(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.log('update');
+              // console.log('update')
               _a = this;
               return [4
               /*yield*/
               , this.getSuggestions()];
 
             case 1:
+              // console.log('update')
               _a.suggestions = _b.sent();
               this.showSuggestions = true;
               this.selectionIndex = -1;
@@ -496,8 +488,7 @@ var MinAutocomplete = Vue.extend({
       });
     },
     hideSuggestions: function hideSuggestions() {
-      console.log('hide');
-
+      // console.log('hide')
       if (this.showSuggestions) {
         this.showSuggestions = false;
         this.selectionIndex = -1;

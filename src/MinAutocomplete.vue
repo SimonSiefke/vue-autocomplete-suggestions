@@ -21,14 +21,11 @@
 import Vue, { VNode } from 'vue'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
 
-// if suggestions source is an async function,
-// save the result for each input inside this cache
-const suggestionCache = {} as any
-
 interface Data {
   selectionIndex: number
   showSuggestions: boolean
   suggestions: any[]
+  suggestionCache: object
 }
 
 type Suggestion = string | object | number
@@ -51,7 +48,7 @@ export default Vue.extend({
             // @ts-ignore
             !suggestions.contains(event.target)
           ) {
-            console.log('outside')
+            // console.log('outside')
 
             // if it was, call method provided in attribute value
             // @ts-ignore
@@ -95,6 +92,9 @@ export default Vue.extend({
       showSuggestions: false,
       selectionIndex: -1,
       suggestions: [],
+      // if suggestions source is an async function,
+      // save the result for each input inside this cache
+      suggestionCache: {},
     }
   },
   computed: {
@@ -155,14 +155,14 @@ export default Vue.extend({
         // @ts-ignore
         if (this.cacheResults) {
           // @ts-ignore
-          if (!suggestionCache[currentValue]) {
+          if (!this.suggestionCache[currentValue]) {
             // @ts-ignore
             const newSuggestions = await this.suggestionSource()
             // @ts-ignore
-            suggestionCache[currentValue] = newSuggestions
+            this.suggestionCache[currentValue] = newSuggestions
           }
           // @ts-ignore
-          return suggestionCache[currentValue]
+          return this.suggestionCache[currentValue]
         }
         // @ts-ignore
         return this.suggestionSource()
@@ -213,13 +213,13 @@ export default Vue.extend({
       this.scrollToCurrentSuggestion()
     },
     async handleInput() {
-      console.log('update')
+      // console.log('update')
       this.suggestions = await this.getSuggestions()
       this.showSuggestions = true
       this.selectionIndex = -1
     },
     hideSuggestions() {
-      console.log('hide')
+      // console.log('hide')
 
       if (this.showSuggestions) {
         this.showSuggestions = false

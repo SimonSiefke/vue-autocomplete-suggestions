@@ -1,3 +1,8 @@
-import Autocomplete from './Autocomplete.vue'
+// import Autocomplete from './Autocomplete.vue'
 
-export default Autocomplete
+// export default Autocomplete
+
+
+import MinAutocomplete from './MinAutocomplete.vue'
+
+export default MinAutocomplete

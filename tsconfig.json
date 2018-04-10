@@ -8,7 +8,8 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["node"]
+    "types": ["node"],
+    "lib": ["dom", "es7"]
   },
   "include": ["**/*.ts", "**/*.vue"],
   "exclude": ["node_modules"]

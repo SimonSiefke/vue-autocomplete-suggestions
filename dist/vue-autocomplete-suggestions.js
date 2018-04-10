@@ -6,6 +6,29 @@
 
   Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
+  var DefaultSuggestionComponent = Vue.extend({
+    render: function render() {
+      var _vm = this;
+
+      var _h = _vm.$createElement;
+
+      var _c = _vm._self._c || _h;
+
+      return _c('span', [_vm._v(_vm._s(JSON.stringify(_vm.props.suggestion)) + " " + _vm._s(_vm.props.active))]);
+    },
+    staticRenderFns: [],
+    props: {
+      suggestion: {
+        required: true,
+        type: [Number, Object, Array, String]
+      },
+      active: {
+        type: Boolean,
+        required: true
+      }
+    }
+  });
+
   var __assign = undefined && undefined.__assign || Object.assign || function (t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
@@ -17,7 +40,7 @@
 
     return t;
   };
-  var Autocomplete = Vue.extend({
+  var MinAutocomplete = Vue.extend({
     render: function render() {
       var _vm = this;
 
@@ -32,40 +55,13 @@
           value: _vm.hideSuggestions,
           expression: "hideSuggestions"
         }],
-        staticClass: "vue-autocomplete__wrapper"
+        staticClass: "vue-autocomplete"
       }, [_c('div', [_c('input', _vm._g(_vm._b({
         ref: "input",
         attrs: {
           "type": "text"
-        },
-        domProps: {
-          "value": _vm.value
-        },
-        on: {
-          "focus": function focus($event) {
-            _vm.showSuggestions = true;
-          },
-          "keydown": [function ($event) {
-            if (!('button' in $event) && _vm._k($event.keyCode, "up", 38, $event.key, ["Up", "ArrowUp"])) {
-              return null;
-            }
-
-            return _vm.decrementSelectedIndex($event);
-          }, function ($event) {
-            if (!('button' in $event) && _vm._k($event.keyCode, "down", 40, $event.key, ["Down", "ArrowDown"])) {
-              return null;
-            }
-
-            return _vm.incrementSelectedIndex($event);
-          }]
         }
-      }, 'input', _vm.$attrs, false), _vm.listeners)), _vm._v(" "), _c('img', {
-        directives: [{
-          name: "show",
-          rawName: "v-show",
-          value: _vm.value !== '',
-          expression: "value!==''"
-        }],
+      }, 'input', _vm.inputAttributes, false), _vm.inputListeners)), _vm._v(" "), _c('img', {
         ref: "resetSearch",
         attrs: {
           "src": "./resetSearchIcon.svg",
@@ -81,33 +77,37 @@
           value: _vm.showSuggestions,
           expression: "showSuggestions"
         }],
-        ref: "suggestions",
-        staticClass: "vue-autocomplete__suggestions",
-        style: {
-          'max-height': "".concat(_vm.maxHeight, "px")
-        }
-      }, [_vm.suggestions.length > 0 ? _vm._l(_vm.suggestions, function (suggestion, index) {
+        ref: "suggestions"
+      }, [_vm._l(_vm.suggestions, function (suggestion, index) {
         return _c('li', {
           key: _vm.getSuggestionText(suggestion),
+          ref: "suggestion",
+          refInFor: true,
           on: {
             "click": function click($event) {
               _vm.selectSuggestion(suggestion);
             },
             "mouseover": function mouseover($event) {
-              _vm.selectedIndex = index;
+              _vm.selectionIndex = index;
             },
             "mouseleave": function mouseleave($event) {
-              _vm.selectedIndex = -1;
+              _vm.selectionIndex = -1;
             }
           }
         }, [_c(_vm.suggestionComponent, {
           tag: "component",
           attrs: {
             "suggestion": suggestion,
-            "active": index === _vm.selectedIndex
+            "active": index === _vm.selectionIndex
           }
         })], 1);
-      }) : [_c('li', [_vm._t("noSuggestionFoundComponent", [_vm._v("no suggestion found")])], 2)]], 2)]);
+      }), _vm._v(" "), _vm.suggestions.length === 0 ? _c('li', {
+        on: {
+          "mouseover": function mouseover($event) {
+            _vm.hovered = true;
+          }
+        }
+      }, [_vm._v(" No results ")]) : _vm._e()], 2)]);
     },
     staticRenderFns: [],
     name: 'VueAutocomplete',
@@ -123,7 +123,8 @@
                 resetSearch = _a.resetSearch,
                 suggestions = _a.suggestions; // check if the click was outside the components
 
-            if (input !== event.target && resetSearch !== event.target && suggestions !== event.target) {
+            if (input !== event.target && resetSearch !== event.target && // @ts-ignore
+            !suggestions.contains(event.target)) {
               // if it was, call method provided in attribute value
               // @ts-ignore
               vnode.context[binding.expression](event);
@@ -139,79 +140,152 @@
     },
     inheritAttrs: false,
     props: {
-      maxHeight: {
-        type: Number,
-        "default": 300
-      },
-      value: {
-        type: String,
-        required: true
-      },
-      suggestions: {
-        type: Array,
-        required: true
-      },
-      suggestionComponent: {
-        required: true,
-        type: Object
-      },
-
-      /**
-        this function returns the value that will be the value
-        of the input element when the suggestionComponent is clicked.
-        because it is unique, its return value is also used as a key
-        for the suggestion (see <li :key="getSuggestionText(suggestion)">)
-      */
       getSuggestionText: {
         type: Function,
         "default": function _default(suggestion) {
           return JSON.stringify(suggestion);
         }
+      },
+      suggestionComponent: {
+        "default": DefaultSuggestionComponent,
+        type: Function
+      },
+      suggestions: {
+        type: Array,
+        required: true
+      },
+      value: {
+        type: String,
+        required: true
       }
     },
     data: function data() {
       return {
-        selectedIndex: -1,
-        showSuggestions: true
+        showSuggestions: false,
+        selectionIndex: -1
       };
     },
     computed: {
-      listeners: function listeners() {
+      inputListeners: function inputListeners() {
         var _this = this;
 
         return __assign({}, this.$listeners, {
           input: function input(event) {
-            return _this.$emit('input', event.target.value);
+            _this.handleInput();
+
+            _this.$emit('input', event.target.value);
+          },
+          click: function click(event) {
+            _this.handleClick();
+
+            _this.$emit('click', event);
+          },
+          keydown: function keydown(event) {
+            var key = event.keyCode;
+            var selectionUpKeys = [33, 38];
+            var selectionDownKeys = [34, 40];
+            var selectKeys = [13, 36];
+            var hideSuggestionsKeys = [27, 35];
+
+            if (selectionUpKeys.includes(key)) {
+              _this.handleKeyUp();
+            } else if (selectionDownKeys.includes(key)) {
+              _this.handleKeyDown();
+            } else if (selectKeys.includes(key)) {
+              _this.handleKeyEnter();
+            } else if (hideSuggestionsKeys.includes(key)) {
+              _this.handleKeyEscape();
+            }
+
+            _this.$emit('keydown', event);
           }
+        });
+      },
+      inputAttributes: function inputAttributes() {
+        return __assign({}, this.$attrs, {
+          // @ts-ignore
+          value: this.value
         });
       }
     },
+    watch: {
+      value: function value(newValue) {
+        if (newValue === '') {
+          this.showSuggestions = false;
+        }
+      }
+    },
     methods: {
-      hideSuggestions: function hideSuggestions() {
-        this.showSuggestions = false;
-        this.selectedIndex = -1;
+      handleClick: function handleClick() {
+        // @ts-ignore
+        if (this.value !== '') {
+          this.showSuggestions = true;
+        }
       },
-      selectSuggestion: function selectSuggestion(suggestion) {
-        this.hideSuggestions(); // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
+      handleKeyDown: function handleKeyDown() {
+        // if its at the bottom, move to top
+        // if its not at the bottom move up by 1
+        // @ts-ignore
+        this.selectionIndex = (this.selectionIndex + 1) % this.suggestions.length;
+        this.scrollToCurrentSuggestion();
+      },
+      handleKeyEnter: function handleKeyEnter() {
+        var index = this.selectionIndex; // @ts-ignore
 
-        var value = this.getSuggestionText(suggestion);
-        this.$emit('input', value);
+        if (0 <= index && index < this.suggestions.length) {
+          // @ts-ignore
+          var currentSuggestion = this.suggestions[index]; // TODO: remove side effect
+
+          this.selectSuggestion(currentSuggestion);
+        }
       },
-      incrementSelectedIndex: function incrementSelectedIndex() {
-        this.selectedIndex = Math.min(this.selectedIndex + 1, // @ts-ignore (see https://github.com/vuejs/vue/pull/6856)
-        this.suggestions.length);
+      handleKeyEscape: function handleKeyEscape() {
+        this.hideSuggestions();
+        var inputElement = this.$refs.input;
+        inputElement.blur();
       },
-      decrementSelectedIndex: function decrementSelectedIndex() {
-        this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+      handleKeyUp: function handleKeyUp() {
+        // if its at the top, move to bottom
+        // if its not at the top move up by 1
+        this.selectionIndex = // @ts-ignore
+        (this.selectionIndex - 1 + this.suggestions.length) % // @ts-ignore
+        this.suggestions.length;
+        this.scrollToCurrentSuggestion();
+      },
+      handleInput: function handleInput() {
+        this.showSuggestions = true;
+        this.selectionIndex = -1;
+      },
+      hideSuggestions: function hideSuggestions() {
+        console.log('hide');
+
+        if (this.showSuggestions) {
+          this.showSuggestions = false;
+          this.selectionIndex = -1;
+        }
       },
       resetSearch: function resetSearch() {
-        this.$emit('input', '');
-        var inputElement = this.$refs.input;
-        inputElement.focus();
+        this.$emit('input', ''); // @ts-ignore
+
+        this.$refs.input.focus();
+      },
+      selectSuggestion: function selectSuggestion(suggestion) {
+        this.hideSuggestions(); // @ts-ignore
+
+        this.$emit('input', this.getSuggestionText(suggestion));
+      },
+      scrollToCurrentSuggestion: function scrollToCurrentSuggestion() {// TODO:
+        // const suggestionItems = this.$refs.suggestionItems as any
+        // const selectedSuggestionItem = suggestionItems[this.selectionIndex]
+        // if (selectedSuggestionItem && selectedSuggestionItem.scrollIntoView) {
+        //   selectedSuggestionItem.scrollIntoView(false)
+        // }
       }
     }
   });
 
-  return Autocomplete;
+  // import Autocomplete from './Autocomplete.vue'
+
+  return MinAutocomplete;
 
 })));

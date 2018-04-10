@@ -55,6 +55,6 @@ module.exports = {
   },
   external: ['vue'],
   sizeLimit: {
-    cjs: '2KB',
+    cjs: '2.5KB',
   },
 }

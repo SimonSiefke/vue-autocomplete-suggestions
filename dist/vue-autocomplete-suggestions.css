@@ -178,15 +178,45 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 html,
 body {
   height: 100%;
 }
-.vue-autocomplete__wrapper {
+section {
   position: relative;
+  width: 300px;
 }
 
-.vue-autocomplete__wrapper > div img {
+img {
   position: absolute;
   height: 0.85rem;
   width: 0.85rem;
@@ -197,23 +227,22 @@ body {
   padding: 0.2rem;
 }
 
-.vue-autocomplete__wrapper input {
-  max-width: 100%;
+input {
+  width: 100%;
   box-sizing: border-box;
 }
-
-ul.vue-autocomplete__suggestions {
+ul {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
   width: 100%;
   overflow-y: auto;
+  max-height: 300px;
 }
 
-ul.vue-autocomplete__suggestions > li {
+li {
   list-style: none;
   cursor: pointer;
-  width: 100%;
   user-select: none;
 }

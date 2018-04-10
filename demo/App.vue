@@ -1,10 +1,7 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete
-    v-model="searchValue"
-    :suggestions="suggestions"
-    :get-suggestion-text="getSuggestionText"
-    :suggestion-component="$options.components.suggestionComponent" />
+  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" id="l" />
+  <!-- :suggestion-component="$options.components.suggestionComponent" -->
 </template>
 
 <script>
@@ -25,7 +22,7 @@ export default {
     }
   },
   computed: {
-    suggestions() {
+    filteredAnimals() {
       return this.animals.filter(animal => {
         const searchValueRegex = new RegExp(this.searchValue, 'i')
         return searchValueRegex.test(animal.name)
@@ -36,6 +33,11 @@ export default {
     getSuggestionText(animal) {
       return animal.name
     },
+    async fetchAnimals() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(this.filteredAnimals), 1000)
+      })
+    },
   },
 }
 </script>
@@ -44,11 +46,11 @@ export default {
 body {
   margin: 0;
 }
-.vue-autocomplete__wrapper {
-  width: 208px;
+.vue-autocomplete {
+  width: 300px;
 }
 
-.vue-autocomplete__suggestions {
+.vue-autocomplete > ul {
   border: 1px solid #c5c5c5;
 }
 </style>

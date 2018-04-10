@@ -41,7 +41,6 @@
     <ul
       v-show="showSuggestions"
       ref="suggestions"
-      :style="{'max-height': `${maxHeight}px`}"
       class="vue-autocomplete__suggestions">
       <template v-if="suggestions.length>0">
         <li
@@ -51,7 +50,7 @@
           class="vue-autocomplete__suggestion"
           @click="selectSuggestion(suggestion)"
           @mouseover="selectedIndex=index"
-          @mouseleave="selectedIndex=-1">
+        >
           <component
             :is="suggestionComponent"
             :suggestion="suggestion"
@@ -59,9 +58,7 @@
         </li>
       </template>
       <template v-else>
-        <li>
-          <slot name="noSuggestionFoundComponent">no suggestion found</slot>
-        </li>
+        <li> no suggestion found </li>
       </template>
     </ul>
   </section>
@@ -69,6 +66,7 @@
 
 <script lang="ts">
 import Vue, { VNode } from 'vue'
+import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
 
 interface Data {
   selectedIndex: number
@@ -108,10 +106,6 @@ export default Vue.extend({
   },
   inheritAttrs: false, // bind attributes to the input tag (see 2.)
   props: {
-    maxHeight: {
-      type: Number,
-      default: 300,
-    },
     value: {
       type: String,
       required: true,
@@ -121,8 +115,8 @@ export default Vue.extend({
       required: true,
     },
     suggestionComponent: {
-      required: true,
-      type: Object,
+      default: DefaultSuggestionComponent,
+      type: Function,
     },
     /**
       this function returns the value that will be the value
@@ -137,7 +131,7 @@ export default Vue.extend({
       },
     },
   },
-  data() {
+  data(): Data {
     return {
       selectedIndex: -1,
       showSuggestions: true,
@@ -162,9 +156,6 @@ export default Vue.extend({
       const value = this.getSuggestionText(suggestion)
       this.$emit('input', value)
     },
-    // selectSuggestionAtIndex(index:number){
-    //   if()
-    // },
     incrementSelectedIndex() {
       this.showSuggestions = true
       this.selectedIndex = Math.min(
@@ -206,7 +197,7 @@ body {
 }
 
 .vue-autocomplete__wrapper input {
-  max-width: 100%;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -217,6 +208,7 @@ ul.vue-autocomplete__suggestions {
   margin-bottom: 0;
   width: 100%;
   overflow-y: auto;
+  max-height: 300px;
 }
 
 ul.vue-autocomplete__suggestions > li {

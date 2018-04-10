@@ -233,6 +233,7 @@ export default Vue.extend({
     },
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
+      this.$emit('select', suggestion)
       // @ts-ignore
       this.$emit('input', this.getSuggestionText(suggestion))
     },

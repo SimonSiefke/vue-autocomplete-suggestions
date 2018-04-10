@@ -1,6 +1,6 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" id="l" />
+  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" @select="searchValue=''" />
   <!-- :suggestion-component="$options.components.suggestionComponent" -->
 </template>
 

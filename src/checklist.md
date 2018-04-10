@@ -9,3 +9,5 @@
 * [ ] scroll into view when arrow key is pressed
 * [ ] dynamic input element (slot)
 * [ ] dynamic keys for event handling (tab, enter for select)
+* [ ] fix svg not showing up on npm
+* [ ] listen for custom events like select, request start, request failed

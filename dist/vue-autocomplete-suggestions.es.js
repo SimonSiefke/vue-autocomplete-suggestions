@@ -505,7 +505,8 @@ var MinAutocomplete = Vue.extend({
       this.$refs.input.focus();
     },
     selectSuggestion: function selectSuggestion(suggestion) {
-      this.hideSuggestions(); // @ts-ignore
+      this.hideSuggestions();
+      this.$emit('select', suggestion); // @ts-ignore
 
       this.$emit('input', this.getSuggestionText(suggestion));
     },

@@ -163,7 +163,7 @@ export default Vue.extend({
     },
     handleKeyDown() {
       // if its at the bottom, move to top
-      // if its not at the bottom move up by 1
+      // if its not at the bottom move down by 1
       // @ts-ignore
       this.selectionIndex = (this.selectionIndex + 1) % this.suggestions.length
       this.scrollToCurrentSuggestion()

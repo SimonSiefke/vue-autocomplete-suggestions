@@ -21,6 +21,10 @@
 import Vue, { VNode } from 'vue'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
 
+// if suggestions source is an async function,
+// save the result for each input inside this cache
+const suggestionCache = {} as any
+
 interface Data {
   selectionIndex: number
   showSuggestions: boolean
@@ -63,6 +67,10 @@ export default Vue.extend({
   },
   inheritAttrs: false,
   props: {
+    cacheResults: {
+      type: Boolean,
+      default: true,
+    },
     getSuggestionText: {
       type: Function,
       default(suggestion: any) {
@@ -105,7 +113,7 @@ export default Vue.extend({
           const key = event.keyCode
           const selectionUpKeys = [33, 38]
           const selectionDownKeys = [34, 40]
-          const selectKeys = [13, 36]
+          const selectKeys = [9, 13, 36]
           const hideSuggestionsKeys = [27, 35]
 
           if (selectionUpKeys.includes(key)) {
@@ -130,10 +138,6 @@ export default Vue.extend({
       }
     },
   },
-  async created() {
-    // @ts-ignore
-    console.log(await this.suggestionSource())
-  },
   watch: {
     value(newValue) {
       if (newValue === '') {
@@ -143,21 +147,34 @@ export default Vue.extend({
   },
   methods: {
     async getSuggestions(): Promise<Suggestion[]> {
+      // get the current value, because it will be updated after this function is called
+      const inputElement = this.$refs.input as HTMLInputElement
+      const currentValue = inputElement.value
       // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
         // @ts-ignore
+        if (this.cacheResults) {
+          // @ts-ignore
+          if (!suggestionCache[currentValue]) {
+            // @ts-ignore
+            const newSuggestions = await this.suggestionSource()
+            // @ts-ignore
+            suggestionCache[currentValue] = newSuggestions
+          }
+          // @ts-ignore
+          return suggestionCache[currentValue]
+        }
+        // @ts-ignore
         return this.suggestionSource()
       }
+      // suggestion source is an array
       // @ts-ignore
-      if (Array.isArray(this.suggestionSource)) {
-        // @ts-ignore
-        return this.suggestionSource
-      }
-      return []
+      return this.suggestionSource
     },
-    handleClick() {
+    async handleClick() {
       // @ts-ignore
       if (this.value !== '') {
+        this.suggestions = await this.getSuggestions()
         this.showSuggestions = true
       }
     },
@@ -165,6 +182,7 @@ export default Vue.extend({
       // if its at the bottom, move to top
       // if its not at the bottom move down by 1
       // @ts-ignore
+      this.showSuggestions = true
       this.selectionIndex = (this.selectionIndex + 1) % this.suggestions.length
       this.scrollToCurrentSuggestion()
     },
@@ -196,10 +214,7 @@ export default Vue.extend({
     },
     async handleInput() {
       console.log('update')
-
       this.suggestions = await this.getSuggestions()
-      console.log(this.suggestions)
-
       this.showSuggestions = true
       this.selectionIndex = -1
     },

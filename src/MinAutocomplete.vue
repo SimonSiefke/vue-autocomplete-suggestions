@@ -98,6 +98,16 @@ export default Vue.extend({
     }
   },
   computed: {
+    inputAttributes(): object {
+      return {
+        ...this.$attrs,
+        // @ts-ignore
+        value: this.value,
+      }
+    },
+    inputElement(): HTMLInputElement {
+      return this.$refs.input as HTMLInputElement
+    },
     inputListeners(): object {
       return {
         ...this.$listeners,
@@ -130,13 +140,6 @@ export default Vue.extend({
         },
       }
     },
-    inputAttributes(): object {
-      return {
-        ...this.$attrs,
-        // @ts-ignore
-        value: this.value,
-      }
-    },
   },
   watch: {
     value(newValue) {
@@ -144,12 +147,15 @@ export default Vue.extend({
         this.showSuggestions = false
       }
     },
+    // TODO: evaluate if this is necessary or can be done with less code
+    async suggestionSource(newSource) {
+      this.suggestions = await this.getSuggestions()
+    },
   },
   methods: {
     async getSuggestions(): Promise<Suggestion[]> {
       // get the current value, because it will be updated after this function is called
-      const inputElement = this.$refs.input as HTMLInputElement
-      const currentValue = inputElement.value
+      const currentValue = this.inputElement.value
       // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
         // @ts-ignore
@@ -198,8 +204,7 @@ export default Vue.extend({
     },
     handleKeyEscape() {
       this.hideSuggestions()
-      const inputElement = this.$refs.input as HTMLInputElement
-      inputElement.blur()
+      this.inputElement.blur()
     },
     handleKeyUp() {
       // if its at the top, move to bottom
@@ -229,13 +234,14 @@ export default Vue.extend({
     resetSearch() {
       this.$emit('input', '')
       // @ts-ignore
-      this.$refs.input.focus()
+      this.inputElement.focus()
     },
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
       this.$emit('select', suggestion)
       // @ts-ignore
       this.$emit('input', this.getSuggestionText(suggestion))
+      this.inputElement.blur()
     },
 
     scrollToCurrentSuggestion() {

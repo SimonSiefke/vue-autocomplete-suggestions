@@ -303,6 +303,15 @@ var MinAutocomplete = Vue.extend({
     };
   },
   computed: {
+    inputAttributes: function inputAttributes() {
+      return __assign({}, this.$attrs, {
+        // @ts-ignore
+        value: this.value
+      });
+    },
+    inputElement: function inputElement() {
+      return this.$refs.input;
+    },
     inputListeners: function inputListeners() {
       var _this = this;
 
@@ -337,12 +346,6 @@ var MinAutocomplete = Vue.extend({
           _this.$emit('keydown', event);
         }
       });
-    },
-    inputAttributes: function inputAttributes() {
-      return __assign({}, this.$attrs, {
-        // @ts-ignore
-        value: this.value
-      });
     }
   },
   watch: {
@@ -350,17 +353,38 @@ var MinAutocomplete = Vue.extend({
       if (newValue === '') {
         this.showSuggestions = false;
       }
+    },
+    // TODO: evaluate if this is necessary or can be done with less code
+    suggestionSource: function suggestionSource(newSource) {
+      return __awaiter(this, void 0, void 0, function () {
+        var _a;
+
+        return __generator(this, function (_b) {
+          switch (_b.label) {
+            case 0:
+              _a = this;
+              return [4
+              /*yield*/
+              , this.getSuggestions()];
+
+            case 1:
+              _a.suggestions = _b.sent();
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
     }
   },
   methods: {
     getSuggestions: function getSuggestions() {
       return __awaiter(this, void 0, void 0, function () {
-        var inputElement, currentValue, newSuggestions;
+        var currentValue, newSuggestions;
         return __generator(this, function (_a) {
           switch (_a.label) {
             case 0:
-              inputElement = this.$refs.input;
-              currentValue = inputElement.value;
+              currentValue = this.inputElement.value;
               if (!(typeof this.suggestionSource === 'function')) return [3
               /*break*/
               , 4];
@@ -451,8 +475,7 @@ var MinAutocomplete = Vue.extend({
     },
     handleKeyEscape: function handleKeyEscape() {
       this.hideSuggestions();
-      var inputElement = this.$refs.input;
-      inputElement.blur();
+      this.inputElement.blur();
     },
     handleKeyUp: function handleKeyUp() {
       // if its at the top, move to bottom
@@ -497,13 +520,14 @@ var MinAutocomplete = Vue.extend({
     resetSearch: function resetSearch() {
       this.$emit('input', ''); // @ts-ignore
 
-      this.$refs.input.focus();
+      this.inputElement.focus();
     },
     selectSuggestion: function selectSuggestion(suggestion) {
       this.hideSuggestions();
       this.$emit('select', suggestion); // @ts-ignore
 
       this.$emit('input', this.getSuggestionText(suggestion));
+      this.inputElement.blur();
     },
     scrollToCurrentSuggestion: function scrollToCurrentSuggestion() {// TODO:
       // const suggestionItems = this.$refs.suggestionItems as any

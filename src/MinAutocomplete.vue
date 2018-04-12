@@ -160,6 +160,8 @@ export default Vue.extend({
   mounted() {
     const inputWrapper = this.$refs.inputWrapper as HTMLDivElement
     this.inputElement = inputWrapper.querySelector('input') as HTMLInputElement
+    // @ts-ignore
+    this.updateInputValue(this.value)
     this.inputElement.addEventListener('focus', () => {
       this.$emit('focus')
     })

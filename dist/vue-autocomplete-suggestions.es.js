@@ -378,7 +378,9 @@ var MinAutocomplete = Vue.extend({
     var _this = this;
 
     var inputWrapper = this.$refs.inputWrapper;
-    this.inputElement = inputWrapper.querySelector('input');
+    this.inputElement = inputWrapper.querySelector('input'); // @ts-ignore
+
+    this.updateInputValue(this.value);
     this.inputElement.addEventListener('focus', function () {
       _this.$emit('focus');
     });

@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      searchValue: '',
+      searchValue: '22',
       animals,
     }
   },

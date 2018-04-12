@@ -381,8 +381,13 @@
       }
     },
     mounted: function mounted() {
+      var _this = this;
+
       var inputWrapper = this.$refs.inputWrapper;
       this.inputElement = inputWrapper.querySelector('input');
+      this.inputElement.addEventListener('focus', function () {
+        _this.$emit('focus');
+      });
     },
     methods: {
       updateInputValue: function updateInputValue(newValue) {
@@ -527,9 +532,9 @@
         }
       },
       selectSuggestion: function selectSuggestion(suggestion) {
-        this.hideSuggestions(); // @ts-ignore
+        this.hideSuggestions();
+        this.$emit('select', suggestion); // @ts-ignore
 
-        this.$emit('select', suggestion);
         this.updateInputValue(this.getSuggestionText(suggestion));
         this.inputElement.blur();
       },

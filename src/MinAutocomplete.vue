@@ -160,6 +160,9 @@ export default Vue.extend({
   mounted() {
     const inputWrapper = this.$refs.inputWrapper as HTMLDivElement
     this.inputElement = inputWrapper.querySelector('input') as HTMLInputElement
+    this.inputElement.addEventListener('focus', () => {
+      this.$emit('focus')
+    })
   },
   methods: {
     updateInputValue(newValue: string) {
@@ -243,8 +246,8 @@ export default Vue.extend({
     },
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
-      // @ts-ignore
       this.$emit('select', suggestion)
+      // @ts-ignore
       this.updateInputValue(this.getSuggestionText(suggestion))
       this.inputElement!.blur()
     },

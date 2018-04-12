@@ -1,6 +1,6 @@
 {
   "name": "vue-autocomplete-suggestions",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "An Autocomplete Component for Vue.js",
   "main": "dist/vue-autocomplete-suggestions.cjs.js",
   "scripts": {

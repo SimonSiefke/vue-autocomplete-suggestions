@@ -298,6 +298,7 @@ body {
   width: 100%;
   overflow-y: auto;
   max-height: 300px;
+  z-index: 1;
 }
 
 .vue-autocomplete li {

@@ -523,9 +523,9 @@ var MinAutocomplete = Vue.extend({
     selectSuggestion: function selectSuggestion(suggestion) {
       this.hideSuggestions(); // @ts-ignore
 
+      this.$emit('select', suggestion);
       this.updateInputValue(this.getSuggestionText(suggestion));
       this.inputElement.blur();
-      this.$emit('select', suggestion);
     },
     scrollToCurrentSuggestion: function scrollToCurrentSuggestion() {// TODO:
       // const suggestionItems = this.$refs.suggestionItems as any

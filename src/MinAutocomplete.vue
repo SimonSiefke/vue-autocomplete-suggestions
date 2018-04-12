@@ -244,9 +244,9 @@ export default Vue.extend({
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
       // @ts-ignore
+      this.$emit('select', suggestion)
       this.updateInputValue(this.getSuggestionText(suggestion))
       this.inputElement!.blur()
-      this.$emit('select', suggestion)
     },
 
     scrollToCurrentSuggestion() {

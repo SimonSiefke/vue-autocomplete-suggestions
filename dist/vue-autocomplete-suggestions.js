@@ -393,12 +393,8 @@
     },
     methods: {
       updateInputValue: function updateInputValue(newValue) {
-        var currentValue = this.inputElement.value;
-
-        if (newValue !== currentValue) {
-          this.inputElement.value = newValue;
-          this.$emit('input', newValue);
-        }
+        this.inputElement.value = newValue;
+        this.$emit('input', newValue);
       },
       getSuggestions: function getSuggestions() {
         return __awaiter(this, void 0, void 0, function () {

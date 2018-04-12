@@ -37,13 +37,7 @@ module.exports = {
   input: 'src/index.ts',
   format: ['cjs', 'es', 'umd', 'umd-min'],
   compress: 'umd',
-  plugins: [
-    'vue',
-    typescript(),
-    copy({
-      './src/resetSearchIcon.svg': './dist/resetSearchIcon.svg',
-    }),
-  ],
+  plugins: ['vue', typescript()],
   buble: {
     transforms: {
       generator: true,

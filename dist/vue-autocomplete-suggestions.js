@@ -195,12 +195,13 @@
           expression: "hideSuggestions"
         }],
         staticClass: "vue-autocomplete"
-      }, [_c('div', [_c('input', _vm._g(_vm._b({
-        ref: "input",
+      }, [_c('div', _vm._g(_vm._b({
+        ref: "inputWrapper"
+      }, 'div', _vm.inputAttributes, false), _vm.inputListeners), [_vm._t("default", [_c('input', {
         attrs: {
           "type": "text"
         }
-      }, 'input', _vm.inputAttributes, false), _vm.inputListeners))]), _vm._v(" "), _c('ul', {
+      })])], 2), _vm._v(" "), _c('ul', {
         directives: [{
           name: "show",
           rawName: "v-show",
@@ -208,11 +209,11 @@
           expression: "showSuggestions"
         }],
         ref: "suggestions"
-      }, [_vm._l(_vm.suggestions, function (suggestion, index) {
+      }, [_vm._t("misc-item-above", null, {
+        suggestions: _vm.suggestions
+      }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
         return _c('li', {
           key: _vm.getSuggestionText(suggestion),
-          ref: "suggestion",
-          refInFor: true,
           on: {
             "click": function click($event) {
               _vm.selectSuggestion(suggestion);
@@ -231,13 +232,9 @@
           suggestion: suggestion,
           active: _vm.selectionIndex === index
         })], 2);
-      }), _vm._v(" "), _vm.suggestions.length === 0 ? _c('li', {
-        on: {
-          "mouseover": function mouseover($event) {
-            _vm.hovered = true;
-          }
-        }
-      }, [_vm._v(" No results ")]) : _vm._e()], 2)]);
+      }), _vm._v(" "), _vm._t("misc-item-below", null, {
+        suggestions: _vm.suggestions
+      })], 2)]);
     },
     staticRenderFns: [],
     name: 'VueAutocomplete',
@@ -252,15 +249,15 @@
         bind: function bind(element, binding, vnode) {
           element.event = function (event) {
             var _a = vnode.context.$refs,
-                input = _a.input,
-                resetSearch = _a.resetSearch,
+                inputWrapper = _a.inputWrapper,
                 suggestions = _a.suggestions; // check if the click was outside the components
 
-            if (input !== event.target && resetSearch !== event.target && // @ts-ignore
+            if ( // @ts-ignore
+            !inputWrapper.contains(event.target) && // @ts-ignore
             !suggestions.contains(event.target)) {
-              // console.log('outside')
-              // if it was, call method provided in attribute value
+              console.log('outside'); // if it was, call method provided in attribute value
               // @ts-ignore
+
               vnode.context[binding.expression](event);
             }
           };
@@ -300,7 +297,8 @@
         suggestions: [],
         // if suggestions source is an async function,
         // save the result for each input inside this cache
-        suggestionCache: {}
+        suggestionCache: {},
+        inputElement: null
       };
     },
     computed: {
@@ -310,17 +308,19 @@
           value: this.value
         });
       },
-      inputElement: function inputElement() {
-        return this.$refs.input;
+      inputComponent: function inputComponent() {
+        if (this.$slots["default"] && !!this.$slots["default"][0].componentInstance) {
+          return this.$slots["default"][0].componentInstance;
+        }
       },
       inputListeners: function inputListeners() {
         var _this = this;
 
         return __assign({}, this.$listeners, {
           input: function input(event) {
-            _this.handleInput();
+            var newValue = event.target.value;
 
-            _this.$emit('input', event.target.value);
+            _this.handleInput(newValue);
           },
           click: function click(event) {
             _this.handleClick();
@@ -354,6 +354,8 @@
         if (newValue === '') {
           this.showSuggestions = false;
         }
+
+        this.updateInputValue(newValue);
       },
       // TODO: evaluate if this is necessary or can be done with less code
       suggestionSource: function suggestionSource(newSource) {
@@ -378,7 +380,15 @@
         });
       }
     },
+    mounted: function mounted() {
+      var inputWrapper = this.$refs.inputWrapper;
+      this.inputElement = inputWrapper.querySelector('input');
+    },
     methods: {
+      updateInputValue: function updateInputValue(newValue) {
+        this.inputElement.value = newValue;
+        this.$emit('input', newValue);
+      },
       getSuggestions: function getSuggestions() {
         return __awaiter(this, void 0, void 0, function () {
           var currentValue, newSuggestions;
@@ -486,21 +496,20 @@
         this.suggestions.length;
         this.scrollToCurrentSuggestion();
       },
-      handleInput: function handleInput() {
+      handleInput: function handleInput(newValue) {
         return __awaiter(this, void 0, void 0, function () {
           var _a;
 
           return __generator(this, function (_b) {
             switch (_b.label) {
               case 0:
-                // console.log('update')
+                this.updateInputValue(newValue);
                 _a = this;
                 return [4
                 /*yield*/
                 , this.getSuggestions()];
 
               case 1:
-                // console.log('update')
                 _a.suggestions = _b.sent();
                 this.showSuggestions = true;
                 this.selectionIndex = -1;
@@ -512,23 +521,17 @@
         });
       },
       hideSuggestions: function hideSuggestions() {
-        // console.log('hide')
         if (this.showSuggestions) {
           this.showSuggestions = false;
           this.selectionIndex = -1;
         }
       },
-      resetSearch: function resetSearch() {
-        this.$emit('input', ''); // @ts-ignore
-
-        this.inputElement.focus();
-      },
       selectSuggestion: function selectSuggestion(suggestion) {
-        this.hideSuggestions();
-        this.$emit('select', suggestion); // @ts-ignore
+        this.hideSuggestions(); // @ts-ignore
 
-        this.$emit('input', this.getSuggestionText(suggestion));
+        this.updateInputValue(this.getSuggestionText(suggestion));
         this.inputElement.blur();
+        this.$emit('select', suggestion);
       },
       scrollToCurrentSuggestion: function scrollToCurrentSuggestion() {// TODO:
         // const suggestionItems = this.$refs.suggestionItems as any

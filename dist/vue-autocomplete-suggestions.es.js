@@ -387,8 +387,12 @@ var MinAutocomplete = Vue.extend({
   },
   methods: {
     updateInputValue: function updateInputValue(newValue) {
-      this.inputElement.value = newValue;
-      this.$emit('input', newValue);
+      var currentValue = this.inputElement.value;
+
+      if (newValue !== currentValue) {
+        this.inputElement.value = newValue;
+        this.$emit('input', newValue);
+      }
     },
     getSuggestions: function getSuggestions() {
       return __awaiter(this, void 0, void 0, function () {
@@ -528,10 +532,10 @@ var MinAutocomplete = Vue.extend({
       }
     },
     selectSuggestion: function selectSuggestion(suggestion) {
-      this.hideSuggestions();
-      this.$emit('select', suggestion); // @ts-ignore
+      this.hideSuggestions(); // @ts-ignore
 
       this.updateInputValue(this.getSuggestionText(suggestion));
+      this.$emit('select', suggestion);
       this.inputElement.blur();
     },
     scrollToCurrentSuggestion: function scrollToCurrentSuggestion() {// TODO:

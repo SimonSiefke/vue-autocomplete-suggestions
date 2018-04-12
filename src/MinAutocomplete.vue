@@ -168,8 +168,11 @@ export default Vue.extend({
   },
   methods: {
     updateInputValue(newValue: string) {
-      this.inputElement!.value = newValue
-      this.$emit('input', newValue)
+      const currentValue = this.inputElement!.value
+      if (newValue !== currentValue) {
+        this.inputElement!.value = newValue
+        this.$emit('input', newValue)
+      }
     },
     async getSuggestions(): Promise<Suggestion[]> {
       // get the current value, because it will be updated after this function is called
@@ -248,9 +251,9 @@ export default Vue.extend({
     },
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
-      this.$emit('select', suggestion)
       // @ts-ignore
       this.updateInputValue(this.getSuggestionText(suggestion))
+      this.$emit('select', suggestion)
       this.inputElement!.blur()
     },
 

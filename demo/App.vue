@@ -1,12 +1,18 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" @select="searchValue=''" />
-  <!-- :suggestion-component="$options.components.suggestionComponent" -->
+  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText">
+    <input type="text" placeholder="search ...">
+    <li slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
+      No results
+    </li>
+  </vue-autocomplete>
 </template>
 
 <script>
 import { animals } from './animals.json' // sample search data
 import VueAutocomplete from '../src'
+// import VueAutocomplete from '../dist/vue-autocomplete-suggestions.es.js'
+// import '../dist/vue-autocomplete-suggestions.min.css'
 import suggestionComponent from './SuggestionComponent.vue'
 
 export default {

@@ -1,18 +1,19 @@
 <template>
   <section class="vue-autocomplete" v-click-outside="hideSuggestions">
-    <div>
-      <input ref="input" v-bind="inputAttributes" v-on="inputListeners" type="text">
-      <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
-      <!-- <img ref="resetSearch" src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch"> -->
+    <div ref="inputWrapper" v-bind="inputAttributes" v-on="inputListeners">
+      <slot>
+        <input type="text">
+      </slot>
     </div>
 
     <ul v-show="showSuggestions" ref="suggestions">
-      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" @mouseleave="selectionIndex = -1" ref="suggestion">
-        <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectionIndex" />
+      <slot name="misc-item-above" :suggestions="suggestions" />
+      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" @mouseleave="selectionIndex = -1">
+        <slot name="suggestionComponent" v-bind="{suggestion, active: selectionIndex===index}">
+          <default-suggestion-component v-bind="{suggestion, active: selectionIndex===index}" />
+        </slot>
       </li>
-      <li v-if="suggestions.length===0" @mouseover="hovered=true">
-        No results
-      </li>
+      <slot name="misc-item-below" :suggestions="suggestions" />
     </ul>
   </section>
 </template>
@@ -26,12 +27,16 @@ interface Data {
   showSuggestions: boolean
   suggestions: any[]
   suggestionCache: object
+  inputElement: HTMLInputElement | null
 }
 
 type Suggestion = string | object | number
 
 export default Vue.extend({
   name: 'VueAutocomplete',
+  components: {
+    DefaultSuggestionComponent,
+  },
   directives: {
     /** detect a click outside of the input and the suggestions
      to hide the suggestions */
@@ -39,16 +44,16 @@ export default Vue.extend({
       isFn: true,
       bind(element: any, binding: any, vnode: VNode) {
         element.event = (event: Event) => {
-          const { input, resetSearch, suggestions } = vnode.context!.$refs
+          const { inputWrapper, suggestions } = vnode.context!.$refs
 
           // check if the click was outside the components
           if (
-            input !== event.target &&
-            resetSearch !== event.target &&
+            // @ts-ignore
+            !inputWrapper.contains(event.target) &&
             // @ts-ignore
             !suggestions.contains(event.target)
           ) {
-            // console.log('outside')
+            console.log('outside')
 
             // if it was, call method provided in attribute value
             // @ts-ignore
@@ -74,10 +79,6 @@ export default Vue.extend({
         return JSON.stringify(suggestion)
       },
     },
-    suggestionComponent: {
-      default: DefaultSuggestionComponent,
-      type: Function,
-    },
     suggestionSource: {
       type: [Array, Function],
       required: true,
@@ -95,6 +96,7 @@ export default Vue.extend({
       // if suggestions source is an async function,
       // save the result for each input inside this cache
       suggestionCache: {},
+      inputElement: null,
     }
   },
   computed: {
@@ -105,15 +107,17 @@ export default Vue.extend({
         value: this.value,
       }
     },
-    inputElement(): HTMLInputElement {
-      return this.$refs.input as HTMLInputElement
+    inputComponent(): Vue | undefined {
+      if (this.$slots.default && !!this.$slots.default[0].componentInstance) {
+        return this.$slots.default[0].componentInstance
+      }
     },
     inputListeners(): object {
       return {
         ...this.$listeners,
         input: (event: Event) => {
-          this.handleInput()
-          this.$emit('input', (event.target as HTMLInputElement).value)
+          const newValue = (event.target as HTMLInputElement).value
+          this.handleInput(newValue)
         },
         click: (event: Event) => {
           this.handleClick()
@@ -146,16 +150,25 @@ export default Vue.extend({
       if (newValue === '') {
         this.showSuggestions = false
       }
+      this.updateInputValue(newValue)
     },
     // TODO: evaluate if this is necessary or can be done with less code
     async suggestionSource(newSource) {
       this.suggestions = await this.getSuggestions()
     },
   },
+  mounted() {
+    const inputWrapper = this.$refs.inputWrapper as HTMLDivElement
+    this.inputElement = inputWrapper.querySelector('input') as HTMLInputElement
+  },
   methods: {
+    updateInputValue(newValue: string) {
+      this.inputElement!.value = newValue
+      this.$emit('input', newValue)
+    },
     async getSuggestions(): Promise<Suggestion[]> {
       // get the current value, because it will be updated after this function is called
-      const currentValue = this.inputElement.value
+      const currentValue = this.inputElement!.value
       // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
         // @ts-ignore
@@ -204,7 +217,7 @@ export default Vue.extend({
     },
     handleKeyEscape() {
       this.hideSuggestions()
-      this.inputElement.blur()
+      this.inputElement!.blur()
     },
     handleKeyUp() {
       // if its at the top, move to bottom
@@ -214,34 +227,26 @@ export default Vue.extend({
         (this.selectionIndex - 1 + this.suggestions.length) %
         // @ts-ignore
         this.suggestions.length
-
       this.scrollToCurrentSuggestion()
     },
-    async handleInput() {
-      // console.log('update')
+    async handleInput(newValue: string) {
+      this.updateInputValue(newValue)
       this.suggestions = await this.getSuggestions()
       this.showSuggestions = true
       this.selectionIndex = -1
     },
     hideSuggestions() {
-      // console.log('hide')
-
       if (this.showSuggestions) {
         this.showSuggestions = false
         this.selectionIndex = -1
       }
     },
-    resetSearch() {
-      this.$emit('input', '')
-      // @ts-ignore
-      this.inputElement.focus()
-    },
     selectSuggestion(suggestion: any) {
       this.hideSuggestions()
-      this.$emit('select', suggestion)
       // @ts-ignore
-      this.$emit('input', this.getSuggestionText(suggestion))
-      this.inputElement.blur()
+      this.updateInputValue(this.getSuggestionText(suggestion))
+      this.inputElement!.blur()
+      this.$emit('select', suggestion)
     },
 
     scrollToCurrentSuggestion() {

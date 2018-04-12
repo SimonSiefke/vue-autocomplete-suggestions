@@ -8,13 +8,13 @@ var DefaultSuggestionComponent = Vue.extend({
 
     var _c = _vm._self._c || _h;
 
-    return _c('span', [_vm._v(_vm._s(JSON.stringify(_vm.props.suggestion)) + " " + _vm._s(_vm.props.active))]);
+    return _c('span', [_vm._v(_vm._s(_vm.suggestion) + " " + _vm._s(_vm.active))]);
   },
   staticRenderFns: [],
   props: {
     suggestion: {
-      required: true,
-      type: [Number, Object, Array, String]
+      type: [Object, Number, String],
+      required: true
     },
     active: {
       type: Boolean,
@@ -218,13 +218,13 @@ var MinAutocomplete = Vue.extend({
             _vm.selectionIndex = -1;
           }
         }
-      }, [_c(_vm.suggestionComponent, {
-        tag: "component",
-        attrs: {
-          "suggestion": suggestion,
-          "active": index === _vm.selectionIndex
-        }
-      })], 1);
+      }, [_vm._t("suggestionComponent", [_c('default-suggestion-component', _vm._b({}, 'default-suggestion-component', {
+        suggestion: suggestion,
+        active: _vm.selectionIndex === index
+      }, false))], null, {
+        suggestion: suggestion,
+        active: _vm.selectionIndex === index
+      })], 2);
     }), _vm._v(" "), _vm.suggestions.length === 0 ? _c('li', {
       on: {
         "mouseover": function mouseover($event) {
@@ -235,6 +235,9 @@ var MinAutocomplete = Vue.extend({
   },
   staticRenderFns: [],
   name: 'VueAutocomplete',
+  components: {
+    DefaultSuggestionComponent: DefaultSuggestionComponent
+  },
   directives: {
     /** detect a click outside of the input and the suggestions
      to hide the suggestions */
@@ -274,10 +277,6 @@ var MinAutocomplete = Vue.extend({
       "default": function _default(suggestion) {
         return JSON.stringify(suggestion);
       }
-    },
-    suggestionComponent: {
-      "default": DefaultSuggestionComponent,
-      type: Function
     },
     suggestionSource: {
       type: [Array, Function],

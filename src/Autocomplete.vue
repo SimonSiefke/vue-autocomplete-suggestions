@@ -1,7 +1,5 @@
 <template>
-  <section
-    v-click-outside="hideSuggestions"
-    class="vue-autocomplete__wrapper">
+  <section v-click-outside="hideSuggestions" class="vue-autocomplete__wrapper">
     <div>
       <!-- some explanations for the input:
       1. 'v-bind="$attrs"': Bind attributes like placeholder
@@ -17,44 +15,16 @@
           (which would be the default). This allows us to do
           things like: <vue-autocomplete @input="someFunction">
       -->
-      <input
-        ref="input"
-        v-bind="$attrs"
-        :value="value"
-        type="text"
-        v-on="listeners"
-        @focus="showSuggestions=true"
-        @input="showSuggestions=true"
-        @keydown.up="decrementSelectedIndex"
-        @keydown.down="incrementSelectedIndex"
-        @keydown.enter="selectSuggestion(suggestions[selectedIndex])">
+      <input ref="input" v-bind="$attrs" :value="value" type="text" v-on="listeners" @focus="showSuggestions=true" @input="showSuggestions=true" @keydown.up="decrementSelectedIndex" @keydown.down="incrementSelectedIndex" @keydown.enter="selectSuggestion(suggestions[selectedIndex])">
 
       <!-- Image by Font Awesome (http://fontawesome.io), License: CC BY 4.0 -->
-      <img
-        v-show="value!==''"
-        ref="resetSearch"
-        src="./resetSearchIcon.svg"
-        alt="reset search"
-        @click="resetSearch">
+      <img v-show="value!==''" ref="resetSearch" src="./resetSearchIcon.svg" alt="reset search" @click="resetSearch">
     </div>
 
-    <ul
-      v-show="showSuggestions"
-      ref="suggestions"
-      class="vue-autocomplete__suggestions">
+    <ul v-show="showSuggestions" ref="suggestions" class="vue-autocomplete__suggestions">
       <template v-if="suggestions.length>0">
-        <li
-          v-for="(suggestion, index) in suggestions"
-          :key="getSuggestionText(suggestion)"
-          :class="{active: selectedIndex===index}"
-          class="vue-autocomplete__suggestion"
-          @click="selectSuggestion(suggestion)"
-          @mouseover="selectedIndex=index"
-        >
-          <component
-            :is="suggestionComponent"
-            :suggestion="suggestion"
-            :active="index===selectedIndex" />
+        <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" :class="{active: selectedIndex===index}" class="vue-autocomplete__suggestion" @click="selectSuggestion(suggestion)" @mouseover="selectedIndex=index">
+          <component :is="suggestionComponent" :suggestion="suggestion" :active="index===selectedIndex" />
         </li>
       </template>
       <template v-else>

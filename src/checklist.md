@@ -7,11 +7,12 @@
 * [x] select on enter and tab
 * [x] disappear on escape
 * [ ] scroll into view when arrow key is pressed
-* [ ] dynamic input element (slot)
+* [x] dynamic input element (slot)
+* [x] other dynamic elements (below, above)
+* [ ] different sections like in vue docs search
 * [ ] dynamic keys for event handling (tab, enter for select)
 * [ ] fix svg not showing up on npm
 * [ ] listen for custom events like select, request start, request failed
 * [ ] fix bug: no results is shown if though there are results
 * [ ] handle loading
-* [ ] different sections
-* [ ] fix bug props undefined in functional component
+* [ ] fix bug props undefined in functional component in build mode (check other vue suggest libraries), maybe https://github.com/vuejs/vue/issues/5837

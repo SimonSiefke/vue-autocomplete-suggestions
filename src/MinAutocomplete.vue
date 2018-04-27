@@ -115,10 +115,6 @@ export default Vue.extend({
     inputListeners(): object {
       return {
         ...this.$listeners,
-        input: (event: Event) => {
-          const newValue = (event.target as HTMLInputElement).value
-          this.handleInput(newValue)
-        },
         click: (event: Event) => {
           this.handleClick()
           this.$emit('click', event)
@@ -150,7 +146,6 @@ export default Vue.extend({
       if (newValue === '') {
         this.showSuggestions = false
       }
-      this.updateInputValue(newValue)
     },
     // TODO: evaluate if this is necessary or can be done with less code
     async suggestionSource(newSource) {
@@ -161,16 +156,18 @@ export default Vue.extend({
     const inputWrapper = this.$refs.inputWrapper as HTMLDivElement
     this.inputElement = inputWrapper.querySelector('input') as HTMLInputElement
     // @ts-ignore
-    this.updateInputValue(this.value)
+    this.inputElement.value = this.value
+    // @ts-ignore
     this.inputElement.addEventListener('focus', () => {
       this.$emit('focus')
     })
+    this.inputElement.addEventListener('input', (event: Event) => {
+      const newValue = (event.target as HTMLInputElement).value
+      this.$emit('input', newValue)
+      this.handleInput(newValue)
+    })
   },
   methods: {
-    updateInputValue(newValue: string) {
-      this.inputElement!.value = newValue
-      this.$emit('input', newValue)
-    },
     async getSuggestions(): Promise<Suggestion[]> {
       // get the current value, because it will be updated after this function is called
       const currentValue = this.inputElement!.value
@@ -235,7 +232,6 @@ export default Vue.extend({
       this.scrollToCurrentSuggestion()
     },
     async handleInput(newValue: string) {
-      this.updateInputValue(newValue)
       this.suggestions = await this.getSuggestions()
       this.showSuggestions = true
       this.selectionIndex = -1

@@ -6,12 +6,11 @@
 * [x] change selection index with arrow keys
 * [x] select on enter and tab
 * [x] disappear on escape
-* [ ] scroll into view when arrow key is pressed
 * [x] dynamic input element (slot)
 * [x] other dynamic elements (below, above)
+* [ ] scroll into view when arrow key is pressed
 * [ ] different sections like in vue docs search
 * [ ] dynamic keys for event handling (tab, enter for select)
-* [ ] fix svg not showing up on npm
 * [ ] listen for custom events like select, request start, request failed
 * [ ] fix bug: no results is shown if though there are results
 * [ ] handle loading

@@ -34,18 +34,6 @@ interface Data {
 
 type Suggestion = string | object | number
 
-// async function withCache(cache: object, inputValue: string, fn: Function) {
-//   if (cache[inputValue]) {
-//     return cache[inputValue]
-//   }
-//   const newResult = await fn()
-//   cache[inputValue] = newResult
-//   return newResult
-// }
-interface Cache {
-  [key: string]: any
-}
-
 export default Vue.extend({
   name: 'VueAutocomplete',
   components: {
@@ -112,7 +100,7 @@ export default Vue.extend({
       suggestions: [],
       // if suggestions source is an async function,
       // save the result for each input inside this cache
-      suggestionCache: new Proxy({} as Cache, {
+      suggestionCache: new Proxy({} as any, {
         async get(target, inputValue: string) {
           if (target[inputValue]) {
             return target[inputValue]

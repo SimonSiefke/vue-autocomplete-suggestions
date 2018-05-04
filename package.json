@@ -10,18 +10,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "module": "dist/vue-autocomplete-suggestions.es.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/SimonSiefke/vue-autocomplete-suggestions"
   },
-  "keywords": [
-    "vue",
-    "vuejs",
-    "autocomplete"
-  ],
+  "keywords": ["vue", "vuejs", "autocomplete"],
   "author": {
     "name": "Simon Siefke",
     "email": "simon.siefke@gmail.com"
@@ -39,8 +33,5 @@
     "vue": "^2.5.16",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^3.11.0"
-  },
-  "dependencies": {
-    "vue-async-computed": "^3.3.1"
   }
 }

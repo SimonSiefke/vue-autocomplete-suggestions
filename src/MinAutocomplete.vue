@@ -1,33 +1,30 @@
 <template>
-  <section class="vue-autocomplete"
-v-click-outside="hideSuggestions">
-    <div ref="inputWrapper"
-v-bind="inputAttributes" v-on="inputListeners">
+  <section class="vue-autocomplete" v-click-outside="hideSuggestions">
+    <div ref="inputWrapper" v-bind="inputAttributes" v-on="inputListeners">
       <slot>
         <input type="text">
       </slot>
     </div>
 
-    <ul v-show="showSuggestions"
-ref="suggestions">
-      <slot name="misc-item-above"
-:suggestions="suggestions" />
-      <li v-for="(suggestion, index) in suggestions"
-:key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" @mouseleave="selectionIndex = -1">
-        <slot name="suggestionComponent"
-v-bind="{suggestion, active: selectionIndex===index}">
+    <ul v-show="showSuggestions" ref="suggestions">
+      <slot name="misc-item-above" :suggestions="suggestions" />
+      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" @mouseleave="selectionIndex = -1">
+        <slot name="suggestionComponent" v-bind="{suggestion, active: selectionIndex===index}">
           <default-suggestion-component v-bind="{suggestion, active: selectionIndex===index}" />
         </slot>
       </li>
-      <slot name="misc-item-below"
-:suggestions="suggestions" />
+      <slot name="misc-item-below" :suggestions="suggestions" />
     </ul>
   </section>
 </template>
 
 <script lang="ts">
 import Vue, { VNode } from 'vue'
+import AsyncComputed from 'vue-async-computed'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
+
+// @ts-ignore
+Vue.use(AsyncComputed)
 
 interface Data {
   selectionIndex: number
@@ -171,12 +168,12 @@ export default Vue.extend({
       },
     },
     // TODO: evaluate if this is necessary or can be done with less code
-    suggestionSource:{
-      async handler(newSource){
-        console.log('new suggestion source');
+    suggestionSource: {
+      async handler(newSource) {
+        console.log('new suggestion source')
 
-    // @ts-ignore
-      this.suggestions = await this.getSuggestions()
+        // @ts-ignore
+        this.suggestions = await this.getSuggestions()
       },
     },
   },
@@ -288,7 +285,7 @@ export default Vue.extend({
       this.$emit('select', suggestion)
       // @ts-ignore
       this.inputElement.value = this.getSuggestionText(suggestion)
-    // @ts-ignore
+      // @ts-ignore
       this.$emit('input', this.getSuggestionText(suggestion))
       this.inputElement!.blur()
     },

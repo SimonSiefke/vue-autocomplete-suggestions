@@ -21,7 +21,10 @@
 <script lang="ts">
 import Vue, { VNode } from 'vue'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
+<<<<<<< HEAD
 import { Prop } from 'vue/types/options'
+=======
+>>>>>>> c9ce6cc84fd515103c1a9ad5b60d84bc4083ec7e
 
 interface Data {
   selectionIndex: number
@@ -29,7 +32,10 @@ interface Data {
   suggestions: any[]
   suggestionCache: object
   inputElement: HTMLInputElement | null
+<<<<<<< HEAD
   isMakingRequest: boolean
+=======
+>>>>>>> c9ce6cc84fd515103c1a9ad5b60d84bc4083ec7e
 }
 
 type Suggestion = string | object | number
@@ -55,7 +61,11 @@ export default Vue.extend({
             // @ts-ignore
             !suggestions.contains(event.target)
           ) {
+<<<<<<< HEAD
             // console.log('outside')
+=======
+            console.log('outside')
+>>>>>>> c9ce6cc84fd515103c1a9ad5b60d84bc4083ec7e
 
             // if it was, call method provided in attribute value
             // @ts-ignore

@@ -1,12 +1,15 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="animals" @select="dodo">
-    <input type="text" placeholder="search ...">
-    <li slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
-      No results
-    </li>
-    <li slot="suggestionComponent" slot-scope="{suggestion}">{{suggestion}}</li>
-  </vue-autocomplete>
+  <<<<<<< HEAD <vue-autocomplete v-model="searchValue" :suggestion-source="animals" @select="dodo">
+    =======
+    <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" @select="searchValue++">
+      >>>>>>> c9ce6cc84fd515103c1a9ad5b60d84bc4083ec7e
+      <input type="text" placeholder="search ...">
+      <li slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
+        No results
+      </li>
+      <li slot="suggestionComponent" slot-scope="{suggestion}">{{suggestion}}</li>
+    </vue-autocomplete>
 </template>
 
 <script>

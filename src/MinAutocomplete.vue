@@ -20,11 +20,8 @@
 
 <script lang="ts">
 import Vue, { VNode } from 'vue'
-import AsyncComputed from 'vue-async-computed'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
-
-// @ts-ignore
-Vue.use(AsyncComputed)
+import { Prop } from 'vue/types/options'
 
 interface Data {
   selectionIndex: number
@@ -36,6 +33,18 @@ interface Data {
 }
 
 type Suggestion = string | object | number
+
+// async function withCache(cache: object, inputValue: string, fn: Function) {
+//   if (cache[inputValue]) {
+//     return cache[inputValue]
+//   }
+//   const newResult = await fn()
+//   cache[inputValue] = newResult
+//   return newResult
+// }
+interface Cache {
+  [key: string]: any
+}
 
 export default Vue.extend({
   name: 'VueAutocomplete',
@@ -103,7 +112,17 @@ export default Vue.extend({
       suggestions: [],
       // if suggestions source is an async function,
       // save the result for each input inside this cache
-      suggestionCache: {},
+      suggestionCache: new Proxy({} as Cache, {
+        async get(target, inputValue: string) {
+          if (target[inputValue]) {
+            return target[inputValue]
+          }
+          // @ts-ignore
+          const newSuggestions = await this.suggestionSource()
+          target[inputValue] = newSuggestions
+          return newSuggestions
+        },
+      }),
       inputElement: null,
       isMakingRequest: false,
     }
@@ -170,6 +189,7 @@ export default Vue.extend({
     // TODO: evaluate if this is necessary or can be done with less code
     suggestionSource: {
       async handler(newSource) {
+        this.clearCache()
         console.log('new suggestion source')
 
         // @ts-ignore
@@ -198,35 +218,35 @@ export default Vue.extend({
     })
   },
   methods: {
+    clearCache() {
+      this.suggestionCache = {}
+    },
     async getSuggestions(): Promise<Suggestion[]> {
-      if (this.isMakingRequest) {
-        return this.suggestions
+      // @ts-ignore
+      if (Array.isArray(this.suggestionSource)) {
+        // @ts-ignore
+        return this.suggestionSource
       }
-      this.isMakingRequest = true
-      // get the current value, because it will be updated after this function is called
-      const currentValue = this.inputElement!.value
+
+      // @ts-ignore
+      if (this.cacheResults) {
+        const currentValue = this.inputElement!.value
+        this.isMakingRequest = true
+        const result = (this.suggestionCache as any)[currentValue]
+        this.isMakingRequest = false
+        return result
+      }
+
       // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
+        this.isMakingRequest = true
         // @ts-ignore
-        if (this.cacheResults) {
-          // @ts-ignore
-          if (!this.suggestionCache[currentValue]) {
-            // @ts-ignore
-            const newSuggestions = await this.suggestionSource()
-            // @ts-ignore
-            this.suggestionCache[currentValue] = newSuggestions
-          }
-          this.isMakingRequest = false
-          // @ts-ignore
-          return this.suggestionCache[currentValue]
-        }
+        const result = await this.suggestionSource()
         this.isMakingRequest = false
-        // @ts-ignore
-        return this.suggestionSource()
+        return result
       }
-      // suggestion source is an array
-      // @ts-ignore
-      return this.suggestionSource
+
+      throw new Error('invalid suggestion source')
     },
     async handleClick() {
       // @ts-ignore

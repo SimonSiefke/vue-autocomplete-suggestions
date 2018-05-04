@@ -8,6 +8,7 @@
 * [x] disappear on escape
 * [x] dynamic input element (slot)
 * [x] other dynamic elements (below, above)
+* [x] fix bug suggestions not updating
 * [ ] scroll into view when arrow key is pressed
 * [ ] different sections like in vue docs search
 * [ ] dynamic keys for event handling (tab, enter for select)

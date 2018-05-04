@@ -1,6 +1,6 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="fetchAnimals" :get-suggestion-text="getSuggestionText" @select="dodo">
+  <vue-autocomplete v-model="searchValue" :suggestion-source="animals" @select="dodo">
     <input type="text" placeholder="search ...">
     <li slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
       No results
@@ -15,6 +15,7 @@ import VueAutocomplete from '../src'
 // import VueAutocomplete from '../dist/vue-autocomplete-suggestions.es.js'
 // import '../dist/vue-autocomplete-suggestions.min.css'
 import suggestionComponent from './SuggestionComponent.vue'
+import { setInterval } from 'timers'
 
 export default {
   name: 'App',
@@ -22,10 +23,17 @@ export default {
     VueAutocomplete,
     suggestionComponent,
   },
+  async mounted() {
+    this.animals = await this.fetchAnimals()
+    let i = 7
+    setInterval(() => {
+      this.animals = []
+    }, 1000)
+  },
   data() {
     return {
       searchValue: '22',
-      animals,
+      animals: [1, 2, 3],
     }
   },
   computed: {
@@ -45,7 +53,8 @@ export default {
     },
     async fetchAnimals() {
       return new Promise((resolve, reject) => {
-        setTimeout(() => resolve(this.filteredAnimals), 1000)
+        resolve([1, 2, 3, 4, 5, 6])
+        // setTimeout(() => resolve(this.filteredAnimals), 1000)
       })
     },
   },

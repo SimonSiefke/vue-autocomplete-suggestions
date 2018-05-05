@@ -257,6 +257,7 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
                                 return [2 /*return*/, this.suggestionSource];
                             }
                             if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
+                            // @ts-ignore
                             if (this.cacheResults) {
                                 currentValue = this.inputElement.value;
                                 this.isMakingRequest = true;

@@ -253,7 +253,7 @@
           },
           getSuggestions: function () {
               return __awaiter(this, void 0, void 0, function () {
-                  var currentValue, result, result;
+                  var currentValue, result_1, result;
                   return __generator(this, function (_a) {
                       switch (_a.label) {
                           case 0:
@@ -262,15 +262,15 @@
                                   // @ts-ignore
                                   return [2 /*return*/, this.suggestionSource];
                               }
+                              if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
                               // @ts-ignore
                               if (this.cacheResults) {
                                   currentValue = this.inputElement.value;
                                   this.isMakingRequest = true;
-                                  result = this.suggestionCache[currentValue];
+                                  result_1 = this.suggestionCache[currentValue];
                                   this.isMakingRequest = false;
-                                  return [2 /*return*/, result];
+                                  return [2 /*return*/, result_1];
                               }
-                              if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
                               this.isMakingRequest = true;
                               return [4 /*yield*/, this.suggestionSource()];
                           case 1:

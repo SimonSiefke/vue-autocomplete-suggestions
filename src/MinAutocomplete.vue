@@ -218,6 +218,7 @@ export default Vue.extend({
 
       // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
+        // @ts-ignore
         if (this.cacheResults) {
           const currentValue = this.inputElement!.value
           this.isMakingRequest = true

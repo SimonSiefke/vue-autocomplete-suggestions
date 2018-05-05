@@ -27,13 +27,15 @@ interface Data {
   selectionIndex: number
   showSuggestions: boolean
   suggestions: any[]
-  suggestionCache: object
+  suggestionCache: Cache
   inputElement: HTMLInputElement | null
   isMakingRequest: boolean
 }
 
 type Suggestion = string | object | number
-
+interface Cache {
+  [key: string]: any
+}
 export default Vue.extend({
   name: 'VueAutocomplete',
   components: {
@@ -100,17 +102,7 @@ export default Vue.extend({
       suggestions: [],
       // if suggestions source is an async function,
       // save the result for each input inside this cache
-      suggestionCache: new Proxy({} as any, {
-        async get(target, inputValue: string) {
-          if (target[inputValue]) {
-            return target[inputValue]
-          }
-          // @ts-ignore
-          const newSuggestions = await this.suggestionSource()
-          target[inputValue] = newSuggestions
-          return newSuggestions
-        },
-      }),
+      suggestionCache: {},
       inputElement: null,
       isMakingRequest: false,
     }
@@ -220,18 +212,27 @@ export default Vue.extend({
       if (typeof this.suggestionSource === 'function') {
         // @ts-ignore
         if (this.cacheResults) {
-          const currentValue = this.inputElement!.value
+          const inputValue = this.inputElement!.value
+          if (this.suggestionCache[inputValue]) {
+            return this.suggestionCache[inputValue]
+          }
           this.isMakingRequest = true
-          const result = (this.suggestionCache as any)[currentValue]
+          // @ts-ignore
+          const newSuggestions = await this.suggestionSource()
+          this.isMakingRequest = false
+          this.suggestionCache[inputValue] = newSuggestions
+          return newSuggestions
+          // }
+          // const currentValue = this.inputElement!.value
+          // const result = (this.suggestionCache as any)[currentValue]
+          // return result
+        } else {
+          this.isMakingRequest = true
+          // @ts-ignore
+          const result = await this.suggestionSource()
           this.isMakingRequest = false
           return result
         }
-
-        this.isMakingRequest = true
-        // @ts-ignore
-        const result = await this.suggestionSource()
-        this.isMakingRequest = false
-        return result
       }
 
       throw new Error('invalid suggestion source')

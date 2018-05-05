@@ -119,26 +119,7 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
             suggestions: [],
             // if suggestions source is an async function,
             // save the result for each input inside this cache
-            suggestionCache: new Proxy({}, {
-                get: function (target, inputValue) {
-                    return __awaiter(this, void 0, void 0, function () {
-                        var newSuggestions;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    if (target[inputValue]) {
-                                        return [2 /*return*/, target[inputValue]];
-                                    }
-                                    return [4 /*yield*/, this.suggestionSource()];
-                                case 1:
-                                    newSuggestions = _a.sent();
-                                    target[inputValue] = newSuggestions;
-                                    return [2 /*return*/, newSuggestions];
-                            }
-                        });
-                    });
-                }
-            }),
+            suggestionCache: {},
             inputElement: null,
             isMakingRequest: false
         };
@@ -247,7 +228,7 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
         },
         getSuggestions: function () {
             return __awaiter(this, void 0, void 0, function () {
-                var currentValue, result_1, result;
+                var inputValue, newSuggestions, result;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -256,22 +237,32 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
                                 // @ts-ignore
                                 return [2 /*return*/, this.suggestionSource];
                             }
-                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
-                            // @ts-ignore
-                            if (this.cacheResults) {
-                                currentValue = this.inputElement.value;
-                                this.isMakingRequest = true;
-                                result_1 = this.suggestionCache[currentValue];
-                                this.isMakingRequest = false;
-                                return [2 /*return*/, result_1];
+                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 4];
+                            if (!this.cacheResults) return [3 /*break*/, 2];
+                            inputValue = this.inputElement.value;
+                            if (this.suggestionCache[inputValue]) {
+                                return [2 /*return*/, this.suggestionCache[inputValue]];
                             }
                             this.isMakingRequest = true;
                             return [4 /*yield*/, this.suggestionSource()];
                         case 1:
+                            newSuggestions = _a.sent();
+                            this.isMakingRequest = false;
+                            this.suggestionCache[inputValue] = newSuggestions;
+                            return [2 /*return*/, newSuggestions
+                                // }
+                                // const currentValue = this.inputElement!.value
+                                // const result = (this.suggestionCache as any)[currentValue]
+                                // return result
+                            ];
+                        case 2:
+                            this.isMakingRequest = true;
+                            return [4 /*yield*/, this.suggestionSource()];
+                        case 3:
                             result = _a.sent();
                             this.isMakingRequest = false;
                             return [2 /*return*/, result];
-                        case 2: throw new Error('invalid suggestion source');
+                        case 4: throw new Error('invalid suggestion source');
                     }
                 });
             });

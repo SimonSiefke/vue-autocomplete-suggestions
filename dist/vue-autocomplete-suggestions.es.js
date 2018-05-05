@@ -247,7 +247,7 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
         },
         getSuggestions: function () {
             return __awaiter(this, void 0, void 0, function () {
-                var currentValue, result, result;
+                var currentValue, result_1, result;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -256,15 +256,14 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
                                 // @ts-ignore
                                 return [2 /*return*/, this.suggestionSource];
                             }
-                            // @ts-ignore
+                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
                             if (this.cacheResults) {
                                 currentValue = this.inputElement.value;
                                 this.isMakingRequest = true;
-                                result = this.suggestionCache[currentValue];
+                                result_1 = this.suggestionCache[currentValue];
                                 this.isMakingRequest = false;
-                                return [2 /*return*/, result];
+                                return [2 /*return*/, result_1];
                             }
-                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 2];
                             this.isMakingRequest = true;
                             return [4 /*yield*/, this.suggestionSource()];
                         case 1:

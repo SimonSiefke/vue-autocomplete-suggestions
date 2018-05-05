@@ -217,16 +217,15 @@ export default Vue.extend({
       }
 
       // @ts-ignore
-      if (this.cacheResults) {
-        const currentValue = this.inputElement!.value
-        this.isMakingRequest = true
-        const result = (this.suggestionCache as any)[currentValue]
-        this.isMakingRequest = false
-        return result
-      }
-
-      // @ts-ignore
       if (typeof this.suggestionSource === 'function') {
+        if (this.cacheResults) {
+          const currentValue = this.inputElement!.value
+          this.isMakingRequest = true
+          const result = (this.suggestionCache as any)[currentValue]
+          this.isMakingRequest = false
+          return result
+        }
+
         this.isMakingRequest = true
         // @ts-ignore
         const result = await this.suggestionSource()

@@ -9,6 +9,7 @@ module.exports = {
     'vue',
     typescript({
       cacheRoot: `./.rpt2_cache/${Math.random()}`,
+      clean: true,
     }),
   ],
   buble: {

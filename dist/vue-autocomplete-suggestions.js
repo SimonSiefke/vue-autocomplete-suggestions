@@ -349,11 +349,11 @@
           },
           selectSuggestion: function (suggestion) {
               this.hideSuggestions();
+              // @ts-ignore
+              this.$emit('input', this.getSuggestionText(suggestion));
               this.$emit('select', suggestion);
               // @ts-ignore
               this.inputElement.value = this.getSuggestionText(suggestion);
-              // @ts-ignore
-              this.$emit('input', this.getSuggestionText(suggestion));
               this.inputElement.blur();
           },
           scrollToCurrentSuggestion: function () {

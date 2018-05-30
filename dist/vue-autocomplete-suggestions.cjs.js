@@ -186,19 +186,25 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
         suggestionSource: {
             handler: function (newSource) {
                 return __awaiter(this, void 0, void 0, function () {
-                    var _a;
+                    var _a, error_1;
                     return __generator(this, function (_b) {
                         switch (_b.label) {
                             case 0:
                                 this.clearCache();
                                 console.log('new suggestion source');
-                                // @ts-ignore
+                                _b.label = 1;
+                            case 1:
+                                _b.trys.push([1, 3, , 4]);
                                 _a = this;
                                 return [4 /*yield*/, this.getSuggestions()];
-                            case 1:
-                                // @ts-ignore
+                            case 2:
                                 _a.suggestions = _b.sent();
-                                return [2 /*return*/];
+                                return [3 /*break*/, 4];
+                            case 3:
+                                error_1 = _b.sent();
+                                console.error(error_1);
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
                         }
                     });
                 });
@@ -232,7 +238,7 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
         },
         getSuggestions: function () {
             return __awaiter(this, void 0, void 0, function () {
-                var inputValue, newSuggestions, result;
+                var inputValue, newSuggestions, error_2, result, error_3;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -241,16 +247,26 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
                                 // @ts-ignore
                                 return [2 /*return*/, this.suggestionSource];
                             }
-                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 4];
-                            if (!this.cacheResults) return [3 /*break*/, 2];
+                            if (!(typeof this.suggestionSource === 'function')) return [3 /*break*/, 10];
+                            if (!this.cacheResults) return [3 /*break*/, 5];
                             inputValue = this.inputElement.value;
                             if (this.suggestionCache[inputValue]) {
                                 return [2 /*return*/, this.suggestionCache[inputValue]];
                             }
                             this.isMakingRequest = true;
-                            return [4 /*yield*/, this.suggestionSource()];
+                            newSuggestions = void 0;
+                            _a.label = 1;
                         case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, this.suggestionSource()];
+                        case 2:
                             newSuggestions = _a.sent();
+                            return [3 /*break*/, 4];
+                        case 3:
+                            error_2 = _a.sent();
+                            console.error(error_2);
+                            return [3 /*break*/, 4];
+                        case 4:
                             this.isMakingRequest = false;
                             this.suggestionCache[inputValue] = newSuggestions;
                             return [2 /*return*/, newSuggestions
@@ -259,14 +275,24 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
                                 // const result = (this.suggestionCache as any)[currentValue]
                                 // return result
                             ];
-                        case 2:
+                        case 5:
                             this.isMakingRequest = true;
+                            result = void 0;
+                            _a.label = 6;
+                        case 6:
+                            _a.trys.push([6, 8, , 9]);
                             return [4 /*yield*/, this.suggestionSource()];
-                        case 3:
+                        case 7:
                             result = _a.sent();
+                            return [3 /*break*/, 9];
+                        case 8:
+                            error_3 = _a.sent();
+                            console.error(error_3);
+                            return [3 /*break*/, 9];
+                        case 9:
                             this.isMakingRequest = false;
                             return [2 /*return*/, result];
-                        case 4: throw new Error('invalid suggestion source');
+                        case 10: throw new Error('invalid suggestion source');
                     }
                 });
             });
@@ -324,14 +350,21 @@ var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$cr
         },
         handleInput: function (newValue) {
             return __awaiter(this, void 0, void 0, function () {
-                var _a;
+                var _a, error_4;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            _b.trys.push([0, 2, , 3]);
                             _a = this;
                             return [4 /*yield*/, this.getSuggestions()];
                         case 1:
                             _a.suggestions = _b.sent();
+                            return [3 /*break*/, 3];
+                        case 2:
+                            error_4 = _b.sent();
+                            console.error = error_4;
+                            return [3 /*break*/, 3];
+                        case 3:
                             this.showSuggestions = true;
                             this.selectionIndex = -1;
                             return [2 /*return*/];

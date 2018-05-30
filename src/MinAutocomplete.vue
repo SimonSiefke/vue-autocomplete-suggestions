@@ -173,7 +173,11 @@ export default Vue.extend({
         console.log('new suggestion source')
 
         // @ts-ignore
+        try{
         this.suggestions = await this.getSuggestions()
+        }catch(error){
+          console.error(error)
+        }
       },
     },
   },
@@ -218,7 +222,12 @@ export default Vue.extend({
           }
           this.isMakingRequest = true
           // @ts-ignore
-          const newSuggestions = await this.suggestionSource()
+          let newSuggestions
+          try {
+          newSuggestions = await this.suggestionSource()
+          } catch (error) {
+            console.error(error)
+          }
           this.isMakingRequest = false
           this.suggestionCache[inputValue] = newSuggestions
           return newSuggestions
@@ -229,7 +238,12 @@ export default Vue.extend({
         } else {
           this.isMakingRequest = true
           // @ts-ignore
-          const result = await this.suggestionSource()
+          let result
+          try {
+          result = await this.suggestionSource()
+          } catch (error) {
+            console.error(error)
+          }
           this.isMakingRequest = false
           return result
         }
@@ -279,7 +293,11 @@ export default Vue.extend({
       this.scrollToCurrentSuggestion()
     },
     async handleInput(newValue: string) {
+      try {
       this.suggestions = await this.getSuggestions()
+      } catch (error) {
+        console.error=error
+      }
       this.showSuggestions = true
       this.selectionIndex = -1
     },

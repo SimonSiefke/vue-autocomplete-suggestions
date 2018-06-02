@@ -1,19 +1,23 @@
 <template>
-  <section class="vue-autocomplete" v-click-outside="hideSuggestions">
+  <section v-click-outside="hideSuggestions" class="vue-autocomplete">
     <div ref="inputWrapper" v-bind="inputAttributes" v-on="inputListeners">
       <slot>
-        <input type="text">
+        <default-search-field />
       </slot>
     </div>
 
-    <ul v-show="showSuggestions" ref="suggestions">
-      <slot name="misc-item-above" :suggestions="suggestions" />
-      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" @mouseleave="selectionIndex = -1">
-        <slot name="suggestionComponent" v-bind="{suggestion, active: selectionIndex===index}">
+    <ul v-show="showSuggestions" ref="suggestions" class="suggestions">
+      <div class="misc-item-above">
+        <slot :suggestions="suggestions" name="misc-item-above" />
+      </div>
+      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" :class="{'is-hovered': selectionIndex===index}" @mouseleave="selectionIndex = -1" class="search-suggestion">
+        <slot v-bind="{suggestion, active: selectionIndex===index}" name="suggestionComponent">
           <default-suggestion-component v-bind="{suggestion, active: selectionIndex===index}" />
         </slot>
       </li>
-      <slot name="misc-item-below" :suggestions="suggestions" />
+      <div class="misc-item-below">
+        <slot :suggestions="suggestions" name="misc-item-below" class="misc-item-below" />
+      </div>
     </ul>
   </section>
 </template>
@@ -21,6 +25,7 @@
 <script lang="ts">
 import Vue, { VNode } from 'vue'
 import DefaultSuggestionComponent from './DefaultSuggestionComponent.vue'
+import DefaultSearchField from './DefaultSearchField.vue'
 import { Prop } from 'vue/types/options'
 
 interface Data {
@@ -40,6 +45,7 @@ export default Vue.extend({
   name: 'VueAutocomplete',
   components: {
     DefaultSuggestionComponent,
+    DefaultSearchField,
   },
   directives: {
     /** detect a click outside of the input and the suggestions
@@ -157,6 +163,8 @@ export default Vue.extend({
       immediate: true,
       handler(newValue) {
         if (this.inputElement) {
+          console.log('input value changed to', newValue)
+
           // @ts-ignore
           this.inputElement.value = this.value
         }
@@ -221,9 +229,9 @@ export default Vue.extend({
             return this.suggestionCache[inputValue]
           }
           this.isMakingRequest = true
-          // @ts-ignore
           let newSuggestions
           try {
+          // @ts-ignore
           newSuggestions = await this.suggestionSource()
           } catch (error) {
             console.error(error)
@@ -237,9 +245,9 @@ export default Vue.extend({
           // return result
         } else {
           this.isMakingRequest = true
-          // @ts-ignore
           let result
           try {
+          // @ts-ignore
           result = await this.suggestionSource()
           } catch (error) {
             console.error(error)
@@ -293,6 +301,8 @@ export default Vue.extend({
       this.scrollToCurrentSuggestion()
     },
     async handleInput(newValue: string) {
+      console.log('handle input')
+
       try {
       this.suggestions = await this.getSuggestions()
       } catch (error) {
@@ -353,21 +363,29 @@ body {
   width: 100%;
   box-sizing: border-box;
 }
-.vue-autocomplete ul {
+.vue-autocomplete .suggestions {
   position: absolute;
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
   width: 100%;
-  overflow-y: auto;
-  max-height: 300px;
   z-index: 1;
+  box-sizing: border-box;
 }
 
-.vue-autocomplete li {
+.vue-autocomplete .search-suggestion {
   list-style: none;
   cursor: pointer;
   user-select: none;
   background: #ffffff;
+}
+.vue-autocomplete .search-suggestion.is-hovered {
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.vue-autocomplete > ul {
+  border-left: 1px solid #bbb;
+  border-right: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
 }
 </style>

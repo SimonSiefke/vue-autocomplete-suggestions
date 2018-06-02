@@ -1,21 +1,17 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="animals" @select="searchValue=''">
-    <input type="text" placeholder="search ...">
-    <li slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
+  <vue-autocomplete v-model="searchValue" :suggestion-source="filteredAnimals">
+    <li slot="suggestionComponent" slot-scope="{suggestion}">{{ suggestion.name }}</li>
+    <span slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
       No results
-    </li>
-    <li slot="suggestionComponent" slot-scope="{suggestion}">{{suggestion}}</li>
+    </span>
   </vue-autocomplete>
 </template>
 
 <script>
 import { animals } from './animals.json' // sample search data
 import VueAutocomplete from '../src'
-// import VueAutocomplete from '../dist/vue-autocomplete-suggestions.es.js'
-// import '../dist/vue-autocomplete-suggestions.min.css'
 import suggestionComponent from './SuggestionComponent.vue'
-import { setInterval } from 'timers'
 
 export default {
   name: 'App',
@@ -23,17 +19,10 @@ export default {
     VueAutocomplete,
     suggestionComponent,
   },
-  async mounted() {
-    this.animals = await this.fetchAnimals()
-    let i = 7
-    setInterval(() => {
-      this.animals = []
-    }, 1000)
-  },
   data() {
     return {
-      searchValue: '22',
-      animals: [1, 2, 3],
+      searchValue: '',
+      animals,
     }
   },
   computed: {
@@ -45,16 +34,12 @@ export default {
     },
   },
   methods: {
-    dodo() {
-      console.log('do ')
-    },
     getSuggestionText(animal) {
       return animal.name
     },
     async fetchAnimals() {
       return new Promise((resolve, reject) => {
-        resolve([1, 2, 3, 4, 5, 6])
-        // setTimeout(() => resolve(this.filteredAnimals), 1000)
+        setTimeout(() => resolve(this.filteredAnimals), 1000)
       })
     },
   },
@@ -63,13 +48,17 @@ export default {
 
 <style>
 body {
-  margin: 0;
+  margin: 1rem;
 }
 .vue-autocomplete {
   width: 300px;
 }
-
-.vue-autocomplete > ul {
-  border: 1px solid #c5c5c5;
+li,
+.misc-item-below {
+  padding: 2px 4px;
+}
+li:first-of-type,
+.misc-item-below {
+  padding-top: 4px;
 }
 </style>

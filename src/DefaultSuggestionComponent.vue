@@ -1,5 +1,5 @@
 <template>
-  <span>{{ suggestion }} {{ active }}</span>
+  <span>{{ suggestion }}</span>
 </template>
 
 <script lang="ts">

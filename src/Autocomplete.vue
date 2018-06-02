@@ -5,14 +5,13 @@
         <default-search-field />
       </slot>
     </div>
-
     <ul v-show="showSuggestions" ref="suggestions" class="suggestions">
       <div class="misc-item-above">
         <slot :suggestions="suggestions" name="misc-item-above" />
       </div>
-      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="selectionIndex = index" :class="{'is-hovered': selectionIndex===index}" @mouseleave="selectionIndex = -1" class="search-suggestion">
-        <slot v-bind="{suggestion, active: selectionIndex===index}" name="suggestionComponent">
-          <default-suggestion-component v-bind="{suggestion, active: selectionIndex===index}" />
+      <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="hoverIndex = index" :class="{'is-hovered': hoverIndex===index}" @mouseleave="hoverIndex = -1" class="search-suggestion">
+        <slot v-bind="{suggestion, active: hoverIndex===index}" name="suggestionComponent">
+          <default-suggestion-component v-bind="{suggestion, active: hoverIndex===index}" />
         </slot>
       </li>
       <div class="misc-item-below">
@@ -29,7 +28,7 @@ import DefaultSearchField from './DefaultSearchField.vue'
 import { Prop } from 'vue/types/options'
 
 interface Data {
-  selectionIndex: number
+  hoverIndex: number
   showSuggestions: boolean
   suggestions: any[]
   suggestionCache: Cache
@@ -41,6 +40,7 @@ type Suggestion = string | object | number
 interface Cache {
   [key: string]: any
 }
+
 export default Vue.extend({
   name: 'VueAutocomplete',
   components: {
@@ -63,8 +63,6 @@ export default Vue.extend({
             // @ts-ignore
             !suggestions.contains(event.target)
           ) {
-            // console.log('outside')
-
             // if it was, call method provided in attribute value
             // @ts-ignore
             vnode.context[binding.expression](event)
@@ -104,7 +102,7 @@ export default Vue.extend({
   data(): Data {
     return {
       showSuggestions: false,
-      selectionIndex: -1,
+      hoverIndex: -1,
       suggestions: [],
       // if suggestions source is an async function,
       // save the result for each input inside this cache
@@ -163,12 +161,9 @@ export default Vue.extend({
       immediate: true,
       handler(newValue) {
         if (this.inputElement) {
-          console.log('input value changed to', newValue)
-
           // @ts-ignore
           this.inputElement.value = this.value
         }
-
         if (newValue === '') {
           this.showSuggestions = false
         }
@@ -239,10 +234,6 @@ export default Vue.extend({
           this.isMakingRequest = false
           this.suggestionCache[inputValue] = newSuggestions
           return newSuggestions
-          // }
-          // const currentValue = this.inputElement!.value
-          // const result = (this.suggestionCache as any)[currentValue]
-          // return result
         } else {
           this.isMakingRequest = true
           let result
@@ -271,13 +262,12 @@ export default Vue.extend({
       // if its not at the bottom move down by 1
       // @ts-ignore
       this.showSuggestions = true
-      this.selectionIndex = (this.selectionIndex + 1) % this.suggestions.length
-      this.scrollToCurrentSuggestion()
+      this.hoverIndex = (this.hoverIndex + 1) % this.suggestions.length
     },
     handleKeyEnter() {
       // console.log('eneter')
 
-      const index = this.selectionIndex
+      const index = this.hoverIndex
       // @ts-ignore
       if (0 <= index && index < this.suggestions.length) {
         // @ts-ignore
@@ -293,12 +283,11 @@ export default Vue.extend({
     handleKeyUp() {
       // if its at the top, move to bottom
       // if its not at the top move up by 1
-      this.selectionIndex =
+      this.hoverIndex =
         // @ts-ignore
-        (this.selectionIndex - 1 + this.suggestions.length) %
+        (this.hoverIndex - 1 + this.suggestions.length) %
         // @ts-ignore
         this.suggestions.length
-      this.scrollToCurrentSuggestion()
     },
     async handleInput(newValue: string) {
       console.log('handle input')
@@ -309,12 +298,12 @@ export default Vue.extend({
         console.error(error)
       }
       this.showSuggestions = true
-      this.selectionIndex = -1
+      this.hoverIndex = -1
     },
     hideSuggestions() {
       if (this.showSuggestions) {
         this.showSuggestions = false
-        this.selectionIndex = -1
+        this.hoverIndex = -1
       }
     },
     selectSuggestion(suggestion: any) {
@@ -325,15 +314,6 @@ export default Vue.extend({
       // @ts-ignore
       this.inputElement.value = this.getSuggestionText(suggestion)
       this.inputElement!.blur()
-    },
-
-    scrollToCurrentSuggestion() {
-      // TODO:
-      // const suggestionItems = this.$refs.suggestionItems as any
-      // const selectedSuggestionItem = suggestionItems[this.selectionIndex]
-      // if (selectedSuggestionItem && selectedSuggestionItem.scrollIntoView) {
-      //   selectedSuggestionItem.scrollIntoView(false)
-      // }
     },
   },
 })

@@ -13,8 +13,14 @@ var DefaultSuggestionComponent = Vue.extend({render: function(){var _vm=this;var
     }
 });
 
-var DefaultSearchField = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)},staticRenderFns: [function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"default-search-field"},[_c('input',{attrs:{"autocomplete":"off","type":"text"}})])}],
-}
+var DefaultSearchField = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"default-search-field",class:_vm.size},[_c('input',{attrs:{"autocomplete":"off","type":"text"}})])},staticRenderFns: [],
+    props: {
+        size: {
+            "default": 'small',
+            type: String
+        }
+    }
+});
 
 var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {

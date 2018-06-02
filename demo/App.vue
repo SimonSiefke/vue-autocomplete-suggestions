@@ -1,6 +1,6 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
-  <vue-autocomplete v-model="searchValue" :suggestion-source="filteredAnimals">
+  <vue-autocomplete v-model="searchValue" :suggestion-source="filteredAnimals" :get-suggestion-text="getSuggestionText">
     <li slot="suggestionComponent" slot-scope="{suggestion}">{{ suggestion.name }}</li>
     <span slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
       No results

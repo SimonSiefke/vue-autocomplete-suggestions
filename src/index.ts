@@ -1,3 +1,2 @@
-import Autocomplete from './Autocomplete.vue'
-
-export default Autocomplete
+export { default as VueAutocomplete } from './Autocomplete.vue'
+export { default as DefaultSearchField } from './DefaultSearchField.vue'

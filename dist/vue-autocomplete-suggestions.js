@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
-  typeof define === 'function' && define.amd ? define(['vue'], factory) :
-  (global.vueAutocompleteSuggestions = factory(global.Vue));
-}(this, (function (Vue) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
+  (factory((global.vueAutocompleteSuggestions = {}),global.Vue));
+}(this, (function (exports,Vue) { 'use strict';
 
   Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -399,6 +399,9 @@
       }
   });
 
-  return Autocomplete;
+  exports.VueAutocomplete = Autocomplete;
+  exports.DefaultSearchField = DefaultSearchField;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

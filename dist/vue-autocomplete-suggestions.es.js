@@ -393,4 +393,4 @@ var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$creat
     }
 });
 
-export default Autocomplete;
+export { Autocomplete as VueAutocomplete, DefaultSearchField };

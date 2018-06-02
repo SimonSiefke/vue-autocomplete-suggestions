@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var Vue = _interopDefault(require('vue'));
@@ -397,4 +399,5 @@ var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$creat
     }
 });
 
-module.exports = Autocomplete;
+exports.VueAutocomplete = Autocomplete;
+exports.DefaultSearchField = DefaultSearchField;

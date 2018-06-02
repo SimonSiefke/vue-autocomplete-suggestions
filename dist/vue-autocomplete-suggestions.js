@@ -6,7 +6,7 @@
 
   Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
-  var DefaultSuggestionComponent = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('span',[_vm._v(_vm._s(_vm.suggestion)+" "+_vm._s(_vm.active))])},staticRenderFns: [],
+  var DefaultSuggestionComponent = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('span',[_vm._v(_vm._s(_vm.suggestion))])},staticRenderFns: [],
       props: {
           suggestion: {
               type: [Object, Number, String],
@@ -18,6 +18,9 @@
           }
       }
   });
+
+  var DefaultSearchField = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)},staticRenderFns: [function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"default-search-field"},[_c('input',{attrs:{"autocomplete":"off","type":"text"}})])}],
+  }
 
   var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
       for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -62,10 +65,11 @@
           if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
       }
   };
-  var MinAutocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.hideSuggestions),expression:"hideSuggestions"}],staticClass:"vue-autocomplete"},[_c('div',_vm._g(_vm._b({ref:"inputWrapper"},'div',_vm.inputAttributes,false),_vm.inputListeners),[_vm._t("default",[_c('input',{attrs:{"type":"text"}})])],2),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.showSuggestions),expression:"showSuggestions"}],ref:"suggestions"},[_vm._t("misc-item-above",null,{suggestions:_vm.suggestions}),_vm._v(" "),_vm._l((_vm.suggestions),function(suggestion,index){return _c('li',{key:_vm.getSuggestionText(suggestion),on:{"click":function($event){_vm.selectSuggestion(suggestion);},"mouseover":function($event){_vm.selectionIndex = index;},"mouseleave":function($event){_vm.selectionIndex = -1;}}},[_vm._t("suggestionComponent",[_c('default-suggestion-component',_vm._b({},'default-suggestion-component',{suggestion: suggestion, active: _vm.selectionIndex===index},false))],null,{suggestion: suggestion, active: _vm.selectionIndex===index})],2)}),_vm._v(" "),_vm._t("misc-item-below",null,{suggestions:_vm.suggestions})],2)])},staticRenderFns: [],
+  var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.hideSuggestions),expression:"hideSuggestions"}],staticClass:"vue-autocomplete"},[_c('div',_vm._g(_vm._b({ref:"inputWrapper"},'div',_vm.inputAttributes,false),_vm.inputListeners),[_vm._t("default",[_c('default-search-field')])],2),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.showSuggestions),expression:"showSuggestions"}],ref:"suggestions",staticClass:"suggestions"},[_c('div',{staticClass:"misc-item-above"},[_vm._t("misc-item-above",null,{suggestions:_vm.suggestions})],2),_vm._v(" "),_vm._l((_vm.suggestions),function(suggestion,index){return _c('li',{key:_vm.getSuggestionText(suggestion),staticClass:"search-suggestion",class:{'is-hovered': _vm.hoverIndex===index},on:{"click":function($event){_vm.selectSuggestion(suggestion);},"mouseover":function($event){_vm.hoverIndex = index;},"mouseleave":function($event){_vm.hoverIndex = -1;}}},[_vm._t("suggestionComponent",[_c('default-suggestion-component',_vm._b({},'default-suggestion-component',{suggestion: suggestion, active: _vm.hoverIndex===index},false))],null,{suggestion: suggestion, active: _vm.hoverIndex===index})],2)}),_vm._v(" "),_c('div',{staticClass:"misc-item-below"},[_vm._t("misc-item-below",null,{suggestions:_vm.suggestions})],2)],2)])},staticRenderFns: [],
       name: 'VueAutocomplete',
       components: {
-          DefaultSuggestionComponent: DefaultSuggestionComponent
+          DefaultSuggestionComponent: DefaultSuggestionComponent,
+          DefaultSearchField: DefaultSearchField
       },
       directives: {
           /** detect a click outside of the input and the suggestions
@@ -81,7 +85,6 @@
                       !inputWrapper.contains(event.target) &&
                           // @ts-ignore
                           !suggestions.contains(event.target)) {
-                          // console.log('outside')
                           // if it was, call method provided in attribute value
                           // @ts-ignore
                           vnode.context[binding.expression](event);
@@ -121,7 +124,7 @@
       data: function () {
           return {
               showSuggestions: false,
-              selectionIndex: -1,
+              hoverIndex: -1,
               suggestions: [],
               // if suggestions source is an async function,
               // save the result for each input inside this cache
@@ -262,6 +265,7 @@
                               _a.trys.push([1, 3, , 4]);
                               return [4 /*yield*/, this.suggestionSource()];
                           case 2:
+                              // @ts-ignore
                               newSuggestions = _a.sent();
                               return [3 /*break*/, 4];
                           case 3:
@@ -271,12 +275,7 @@
                           case 4:
                               this.isMakingRequest = false;
                               this.suggestionCache[inputValue] = newSuggestions;
-                              return [2 /*return*/, newSuggestions
-                                  // }
-                                  // const currentValue = this.inputElement!.value
-                                  // const result = (this.suggestionCache as any)[currentValue]
-                                  // return result
-                              ];
+                              return [2 /*return*/, newSuggestions];
                           case 5:
                               this.isMakingRequest = true;
                               result = void 0;
@@ -285,6 +284,7 @@
                               _a.trys.push([6, 8, , 9]);
                               return [4 /*yield*/, this.suggestionSource()];
                           case 7:
+                              // @ts-ignore
                               result = _a.sent();
                               return [3 /*break*/, 9];
                           case 8:
@@ -322,12 +322,11 @@
               // if its not at the bottom move down by 1
               // @ts-ignore
               this.showSuggestions = true;
-              this.selectionIndex = (this.selectionIndex + 1) % this.suggestions.length;
-              this.scrollToCurrentSuggestion();
+              this.hoverIndex = (this.hoverIndex + 1) % this.suggestions.length;
           },
           handleKeyEnter: function () {
               // console.log('eneter')
-              var index = this.selectionIndex;
+              var index = this.hoverIndex;
               // @ts-ignore
               if (0 <= index && index < this.suggestions.length) {
                   // @ts-ignore
@@ -343,12 +342,11 @@
           handleKeyUp: function () {
               // if its at the top, move to bottom
               // if its not at the top move up by 1
-              this.selectionIndex =
+              this.hoverIndex =
                   // @ts-ignore
-                  (this.selectionIndex - 1 + this.suggestions.length) %
+                  (this.hoverIndex - 1 + this.suggestions.length) %
                       // @ts-ignore
                       this.suggestions.length;
-              this.scrollToCurrentSuggestion();
           },
           handleInput: function (newValue) {
               return __awaiter(this, void 0, void 0, function () {
@@ -356,19 +354,22 @@
                   return __generator(this, function (_b) {
                       switch (_b.label) {
                           case 0:
-                              _b.trys.push([0, 2, , 3]);
+                              console.log('handle input');
+                              _b.label = 1;
+                          case 1:
+                              _b.trys.push([1, 3, , 4]);
                               _a = this;
                               return [4 /*yield*/, this.getSuggestions()];
-                          case 1:
-                              _a.suggestions = _b.sent();
-                              return [3 /*break*/, 3];
                           case 2:
-                              error_4 = _b.sent();
-                              console.error = error_4;
-                              return [3 /*break*/, 3];
+                              _a.suggestions = _b.sent();
+                              return [3 /*break*/, 4];
                           case 3:
+                              error_4 = _b.sent();
+                              console.error(error_4);
+                              return [3 /*break*/, 4];
+                          case 4:
                               this.showSuggestions = true;
-                              this.selectionIndex = -1;
+                              this.hoverIndex = -1;
                               return [2 /*return*/];
                       }
                   });
@@ -377,7 +378,7 @@
           hideSuggestions: function () {
               if (this.showSuggestions) {
                   this.showSuggestions = false;
-                  this.selectionIndex = -1;
+                  this.hoverIndex = -1;
               }
           },
           selectSuggestion: function (suggestion) {
@@ -388,20 +389,10 @@
               // @ts-ignore
               this.inputElement.value = this.getSuggestionText(suggestion);
               this.inputElement.blur();
-          },
-          scrollToCurrentSuggestion: function () {
-              // TODO:
-              // const suggestionItems = this.$refs.suggestionItems as any
-              // const selectedSuggestionItem = suggestionItems[this.selectionIndex]
-              // if (selectedSuggestionItem && selectedSuggestionItem.scrollIntoView) {
-              //   selectedSuggestionItem.scrollIntoView(false)
-              // }
           }
       }
   });
 
-  // import Autocomplete from './Autocomplete.vue'
-
-  return MinAutocomplete;
+  return Autocomplete;
 
 })));

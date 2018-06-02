@@ -1,12 +1,12 @@
 <template>
   <section v-click-outside="hideSuggestions" class="vue-autocomplete">
-    <div ref="inputWrapper" v-bind="inputAttributes" v-on="inputListeners">
+    <div ref="inputWrapper" v-on="inputListeners">
       <slot>
         <default-search-field />
       </slot>
     </div>
     <ul v-show="showSuggestions" ref="suggestions" class="suggestions">
-      <div class="misc-item-above">
+      <div class="misc-item-above" v-if="this.$slots['misc-item-above']">
         <slot :suggestions="suggestions" name="misc-item-above" />
       </div>
       <li v-for="(suggestion, index) in suggestions" :key="getSuggestionText(suggestion)" @click="selectSuggestion(suggestion)" @mouseover="hoverIndex = index" :class="{'is-hovered': hoverIndex===index}" @mouseleave="hoverIndex = -1" class="search-suggestion">
@@ -14,8 +14,8 @@
           <default-suggestion-component v-bind="{suggestion, active: hoverIndex===index}" />
         </slot>
       </li>
-      <div class="misc-item-below">
-        <slot :suggestions="suggestions" name="misc-item-below" class="misc-item-below" />
+      <div class="misc-item-below" v-if="this.$slots['misc-item-below']">
+        <slot :suggestions="suggestions" name="misc-item-below" />
       </div>
     </ul>
   </section>
@@ -114,7 +114,10 @@ export default Vue.extend({
   computed: {
     inputAttributes(): object {
       return {
+        autocomplete:'off',
+        type:'text',
         ...this.$attrs,
+        id:'red',
         // @ts-ignore
         value: this.value,
       }

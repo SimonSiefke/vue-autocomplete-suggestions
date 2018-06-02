@@ -1,6 +1,6 @@
 <template>
   <div class="default-search-field" :class="size">
-    <input autocomplete="off" type="text">
+    <input v-bind="inputAttributes">
   </div>
 </template>
 
@@ -8,10 +8,20 @@
 import Vue from 'vue'
 
 export default Vue.extend({
+  inheritAttrs: false,
   props: {
     size: {
-      default: 'small',
+      default: 'large',
       type: String,
+    },
+  },
+  computed: {
+    inputAttributes(): object {
+      return {
+        type: 'text',
+        autocomplete: 'off',
+        ...this.$attrs,
+      }
     },
   },
 })

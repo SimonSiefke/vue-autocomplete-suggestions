@@ -1,6 +1,7 @@
 <!-- TODO: sort animals and remove ids-->
 <template>
   <vue-autocomplete v-model="searchValue" :suggestion-source="filteredAnimals" :get-suggestion-text="getSuggestionText">
+    <default-search-field size="large" placeholder='search' />
     <li slot="suggestionComponent" slot-scope="{suggestion}">{{ suggestion.name }}</li>
     <span slot="misc-item-below" slot-scope="{suggestions}" v-if="suggestions.length===0">
       No results
@@ -10,13 +11,14 @@
 
 <script>
 import { animals } from './animals.json' // sample search data
-import VueAutocomplete from '../src'
+import { VueAutocomplete, DefaultSearchField } from '../src'
 import suggestionComponent from './SuggestionComponent.vue'
 
 export default {
   name: 'App',
   components: {
     VueAutocomplete,
+    DefaultSearchField,
     suggestionComponent,
   },
   data() {

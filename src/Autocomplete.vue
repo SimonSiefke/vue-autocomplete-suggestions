@@ -306,7 +306,7 @@ export default Vue.extend({
       try {
       this.suggestions = await this.getSuggestions()
       } catch (error) {
-        console.error=error
+        console.error(error)
       }
       this.showSuggestions = true
       this.selectionIndex = -1
@@ -340,23 +340,8 @@ export default Vue.extend({
 </script>
 
 <style>
-html,
-body {
-  height: 100%;
-}
 .vue-autocomplete {
   position: relative;
-}
-
-.vue-autocomplete img {
-  position: absolute;
-  height: 0.85rem;
-  width: 0.85rem;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  padding: 0.2rem;
 }
 
 .vue-autocomplete input {
@@ -379,6 +364,7 @@ body {
   user-select: none;
   background: #ffffff;
 }
+
 .vue-autocomplete .search-suggestion.is-hovered {
   background: rgba(0, 0, 0, 0.09);
 }

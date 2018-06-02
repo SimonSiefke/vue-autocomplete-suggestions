@@ -19,16 +19,30 @@ var DefaultSuggestionComponent = Vue.extend({render: function(){var _vm=this;var
     }
 });
 
-var DefaultSearchField = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"default-search-field",class:_vm.size},[_c('input',{attrs:{"autocomplete":"off","type":"text"}})])},staticRenderFns: [],
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var DefaultSearchField = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"default-search-field",class:_vm.size},[_c('input',_vm._b({},'input',_vm.inputAttributes,false))])},staticRenderFns: [],
+    inheritAttrs: false,
     props: {
         size: {
-            "default": 'small',
+            "default": 'large',
             type: String
+        }
+    },
+    computed: {
+        inputAttributes: function () {
+            return __assign({ type: 'text', autocomplete: 'off' }, this.$attrs);
         }
     }
 });
 
-var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+var __assign$1 = (undefined && undefined.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
         for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -71,7 +85,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.hideSuggestions),expression:"hideSuggestions"}],staticClass:"vue-autocomplete"},[_c('div',_vm._g(_vm._b({ref:"inputWrapper"},'div',_vm.inputAttributes,false),_vm.inputListeners),[_vm._t("default",[_c('default-search-field')])],2),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.showSuggestions),expression:"showSuggestions"}],ref:"suggestions",staticClass:"suggestions"},[_c('div',{staticClass:"misc-item-above"},[_vm._t("misc-item-above",null,{suggestions:_vm.suggestions})],2),_vm._v(" "),_vm._l((_vm.suggestions),function(suggestion,index){return _c('li',{key:_vm.getSuggestionText(suggestion),staticClass:"search-suggestion",class:{'is-hovered': _vm.hoverIndex===index},on:{"click":function($event){_vm.selectSuggestion(suggestion);},"mouseover":function($event){_vm.hoverIndex = index;},"mouseleave":function($event){_vm.hoverIndex = -1;}}},[_vm._t("suggestionComponent",[_c('default-suggestion-component',_vm._b({},'default-suggestion-component',{suggestion: suggestion, active: _vm.hoverIndex===index},false))],null,{suggestion: suggestion, active: _vm.hoverIndex===index})],2)}),_vm._v(" "),_c('div',{staticClass:"misc-item-below"},[_vm._t("misc-item-below",null,{suggestions:_vm.suggestions})],2)],2)])},staticRenderFns: [],
+var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.hideSuggestions),expression:"hideSuggestions"}],staticClass:"vue-autocomplete"},[_c('div',_vm._g({ref:"inputWrapper"},_vm.inputListeners),[_vm._t("default",[_c('default-search-field')])],2),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.showSuggestions),expression:"showSuggestions"}],ref:"suggestions",staticClass:"suggestions"},[(this.$slots['misc-item-above'])?_c('div',{staticClass:"misc-item-above"},[_vm._t("misc-item-above",null,{suggestions:_vm.suggestions})],2):_vm._e(),_vm._v(" "),_vm._l((_vm.suggestions),function(suggestion,index){return _c('li',{key:_vm.getSuggestionText(suggestion),staticClass:"search-suggestion",class:{'is-hovered': _vm.hoverIndex===index},on:{"click":function($event){_vm.selectSuggestion(suggestion);},"mouseover":function($event){_vm.hoverIndex = index;},"mouseleave":function($event){_vm.hoverIndex = -1;}}},[_vm._t("suggestionComponent",[_c('default-suggestion-component',_vm._b({},'default-suggestion-component',{suggestion: suggestion, active: _vm.hoverIndex===index},false))],null,{suggestion: suggestion, active: _vm.hoverIndex===index})],2)}),_vm._v(" "),(this.$slots['misc-item-below'])?_c('div',{staticClass:"misc-item-below"},[_vm._t("misc-item-below",null,{suggestions:_vm.suggestions})],2):_vm._e()],2)])},staticRenderFns: [],
     name: 'VueAutocomplete',
     components: {
         DefaultSuggestionComponent: DefaultSuggestionComponent,
@@ -141,7 +155,7 @@ var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$creat
     },
     computed: {
         inputAttributes: function () {
-            return __assign({}, this.$attrs, { 
+            return __assign$1({ autocomplete: 'off', type: 'text' }, this.$attrs, { id: 'red', 
                 // @ts-ignore
                 value: this.value });
         },
@@ -152,7 +166,7 @@ var Autocomplete = Vue.extend({render: function(){var _vm=this;var _h=_vm.$creat
         },
         inputListeners: function () {
             var _this = this;
-            var nativeListeners = __assign({}, this.$listeners, { click: function (event) {
+            var nativeListeners = __assign$1({}, this.$listeners, { click: function (event) {
                     _this.handleClick();
                     _this.$emit('click', event);
                 }, keydown: function (event) {
